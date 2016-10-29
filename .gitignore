@@ -13,3 +13,5 @@ pom.xml.asc
 /.repl
 *.log
 /.env
+profiles.clj
+.cljs_rhino_repl

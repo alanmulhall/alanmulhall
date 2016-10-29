@@ -96,7 +96,17 @@
 
 
 
-  :profiles {:dev {:repl-options {:init-ns alan-mulhall.repl}
+  :profiles
+  {:uberjar {:hooks [minify-assets.plugin/hooks]
+             :source-paths ["env/prod/clj"]
+             :prep-tasks ["compile" ["cljsbuild" "once" "min"]]
+             :env {:production true}
+             :aot :all
+             :omit-source true}
+
+
+  :dev [:project/dev :profiles/dev]
+  :project/dev {:repl-options {:init-ns alan-mulhall.repl}
 
                    :dependencies [[ring/ring-mock "0.3.0"]
                                   [ring/ring-devel "1.5.0"]
@@ -122,10 +132,4 @@
                                 (pjstadig.humane-test-output/activate!)]
 
                    :env {:dev true}}
-
-             :uberjar {:hooks [minify-assets.plugin/hooks]
-                       :source-paths ["env/prod/clj"]
-                       :prep-tasks ["compile" ["cljsbuild" "once" "min"]]
-                       :env {:production true}
-                       :aot :all
-                       :omit-source true}})
+:profiles/dev {}})
