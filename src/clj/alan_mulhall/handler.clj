@@ -4,6 +4,10 @@
             [hiccup.page :refer [include-js include-css html5]]
             [cheshire.core :as json]
             [alan-mulhall.middleware :refer [wrap-middleware]]
+            [taoensso.timbre :as timbre
+             :refer [log  trace  debug  info  warn  error  fatal  report
+                     logf tracef debugf infof warnf errorf fatalf reportf
+                     spy get-env]]
             [ring.util.response :refer [response]]
             [config.core :refer [env]]))
 

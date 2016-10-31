@@ -20,6 +20,7 @@
                  [binaryage/devtools "0.8.2"]
                  [cljs-ajax "0.5.8"]
                  [secretary "1.2.3"]
+                 [com.taoensso/timbre "4.7.4"]
                  [venantius/accountant "0.1.7"
                   :exclusions [org.clojure/tools.reader]]]
 
@@ -94,6 +95,9 @@
    :css-dirs ["resources/public/css"]
    :ring-handler alan-mulhall.handler/app}
 
+   :sass {:src "src/sass"
+          :dst "resources/public/css"}
+
 
 
   :profiles
@@ -122,6 +126,7 @@
                    :source-paths ["env/dev/clj"]
                    :plugins [[lein-figwheel "0.5.7"]
                              [cider/cider-nrepl "0.10.0-SNAPSHOT"]
+                             [lein-sassy "1.0.7"]
                              [org.clojure/tools.namespace "0.3.0-alpha2"
                               :exclusions [org.clojure/tools.reader]]
                              [refactor-nrepl "2.0.0-SNAPSHOT"

@@ -3,6 +3,10 @@
               [reagent.session :as session]
               [devtools.core :as devtools]
               [ajax.core :refer [GET]]
+              [taoensso.timbre :as timbre
+               :refer-macros [log  trace  debug  info  warn  error  fatal  report
+                              logf tracef debugf infof warnf errorf fatalf reportf
+                              spy get-env]]
               [secretary.core :as secretary :include-macros true]
               [accountant.core :as accountant]))
 
@@ -30,8 +34,10 @@
 ;; Views
 
 (defn home-page []
+  (info "A little log msg from the home page component")
   (.log js/console (range 200))
   (fetch-data)
+  (log :warn "my name is alan") ;; using timbre
   (fn []
     [:div [:h2 "Welcome to alan-mulhall"]
      [:div "State is: " (:data @state)]
