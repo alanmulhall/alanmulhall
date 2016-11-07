@@ -34,7 +34,7 @@
 ;; Views
 
 (defn home-page []
-  (info "A little log msg from the home page component")
+  (info "A wee log msg from the home page component")
   (.log js/console (range 200))
   (fetch-data)
   (log :warn "my name is alan") ;; using timbre
