@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFetcher } from "react-router";
 
 interface Props {
@@ -10,7 +10,8 @@ export default function ContactModal({ onClose }: Props) {
   const overlayRef = useRef<HTMLDivElement>(null);
   const isSubmitting = fetcher.state === "submitting";
   const success = fetcher.data?.success;
-  const error = fetcher.data?.error;
+  const serverError = fetcher.data?.error;
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -27,6 +28,21 @@ export default function ContactModal({ onClose }: Props) {
 
   const handleOverlayClick = (e: React.MouseEvent) => {
     if (e.target === overlayRef.current) onClose();
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const data = new FormData(e.currentTarget);
+    const errs: Record<string, string> = {};
+    if (!String(data.get("name") ?? "").trim()) errs.name = "Name is required.";
+    if (!String(data.get("email") ?? "").trim()) errs.email = "Email is required.";
+    if (!String(data.get("message") ?? "").trim()) errs.message = "Message is required.";
+    if (Object.keys(errs).length > 0) {
+      setFieldErrors(errs);
+      return;
+    }
+    setFieldErrors({});
+    fetcher.submit(data, { method: "post" });
   };
 
   return (
@@ -52,16 +68,18 @@ export default function ContactModal({ onClose }: Props) {
         {success ? (
           <p className="font-mono text-sm text-gray-500">Message sent. I'll be in touch soon.</p>
         ) : (
-          <fetcher.Form method="post" className="flex flex-col gap-4">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div className="flex flex-col gap-1">
               <label className="font-mono text-base text-gray-500" htmlFor="name">Name</label>
               <input
                 id="name"
                 name="name"
                 type="text"
-                required
                 className="border border-black/20 px-3 py-2 text-sm font-mono focus:outline-none focus:border-black transition-colors"
               />
+              {fieldErrors.name && (
+                <p className="font-mono text-sm text-red-500">{fieldErrors.name}</p>
+              )}
             </div>
 
             <div className="flex flex-col gap-1">
@@ -70,9 +88,11 @@ export default function ContactModal({ onClose }: Props) {
                 id="email"
                 name="email"
                 type="email"
-                required
                 className="border border-black/20 px-3 py-2 text-sm font-mono focus:outline-none focus:border-black transition-colors"
               />
+              {fieldErrors.email && (
+                <p className="font-mono text-sm text-red-500">{fieldErrors.email}</p>
+              )}
             </div>
 
             <div className="flex flex-col gap-1">
@@ -80,14 +100,16 @@ export default function ContactModal({ onClose }: Props) {
               <textarea
                 id="message"
                 name="message"
-                required
                 rows={4}
                 className="border border-black/20 px-3 py-2 text-sm font-mono focus:outline-none focus:border-black transition-colors resize-none"
               />
+              {fieldErrors.message && (
+                <p className="font-mono text-sm text-red-500">{fieldErrors.message}</p>
+              )}
             </div>
 
-            {error && (
-              <p className="font-mono text-xs text-red-500">{error}</p>
+            {serverError && (
+              <p className="font-mono text-sm text-red-500">{serverError}</p>
             )}
 
             <button
@@ -97,7 +119,7 @@ export default function ContactModal({ onClose }: Props) {
             >
               {isSubmitting ? "Sending…" : "Send"}
             </button>
-          </fetcher.Form>
+          </form>
         )}
       </div>
     </div>
