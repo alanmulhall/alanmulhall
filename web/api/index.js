@@ -1,5 +1,8 @@
-export default function (req, res) {
-  res.statusCode = 200;
-  res.setHeader("Content-Type", "text/plain");
-  res.end("Function is alive");
-}
+import { createRequestHandler } from "@react-router/node";
+
+const handler = createRequestHandler({
+  build: () => import("../build/server/index.js"),
+  mode: process.env.NODE_ENV || "production",
+});
+
+export default handler;
