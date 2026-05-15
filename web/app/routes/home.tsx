@@ -6,7 +6,7 @@ import WorkSlider from "../components/WorkSlider";
 import ContactModal from "../components/ContactModal";
 import { getWorkImages } from "../utils/getWorkImages";
 
-export function meta({}: Route.MetaArgs) {
+export function meta(_: Route.MetaArgs) {
   return [
     { title: "Alan Mulhall" },
     { name: "description", content: "Alan Mulhall" },
@@ -31,7 +31,7 @@ export async function action({ request }: Route.ActionArgs) {
     text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
   });
 
-  if (error) return { success: false, error: "Failed to send. Please try again." };
+  if (error) {return { success: false, error: "Failed to send. Please try again." };}
   return { success: true };
 }
 

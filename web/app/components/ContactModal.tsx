@@ -15,7 +15,9 @@ export default function ContactModal({ onClose }: Props) {
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {
+        onClose();
+      }
     };
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
@@ -23,11 +25,15 @@ export default function ContactModal({ onClose }: Props) {
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, []);
 
   const handleOverlayClick = (e: React.MouseEvent) => {
-    if (e.target === overlayRef.current) onClose();
+    if (e.target === overlayRef.current) {
+      onClose();
+    }
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -35,13 +41,17 @@ export default function ContactModal({ onClose }: Props) {
     const data = new FormData(e.currentTarget);
     const errs: Record<string, string> = {};
     const email = String(data.get("email") ?? "").trim();
-    if (!String(data.get("name") ?? "").trim()) errs.name = "Name is required.";
+    if (!String(data.get("name") ?? "").trim()) {
+      errs.name = "Name is required.";
+    }
     if (!email) {
       errs.email = "Email is required.";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       errs.email = "Please enter a valid email.";
     }
-    if (!String(data.get("message") ?? "").trim()) errs.message = "Message is required.";
+    if (!String(data.get("message") ?? "").trim()) {
+      errs.message = "Message is required.";
+    }
     if (Object.keys(errs).length > 0) {
       setFieldErrors(errs);
       return;
