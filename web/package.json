@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "react-router build",
-    "vercel-build": "react-router build",
+    "vercel-build": "node scripts/build-vercel.mjs",
     "dev": "react-router dev",
     "start": "react-router-serve ./build/server/index.js",
     "typecheck": "react-router typegen && tsc",

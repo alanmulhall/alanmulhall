@@ -5,3 +5,7 @@
 # React Router
 /.react-router/
 /build/
+
+# Vercel
+/.vercel/output/
+/.vercel/react-router-build-result.json
