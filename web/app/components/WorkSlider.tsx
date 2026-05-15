@@ -1,11 +1,16 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 interface Props {
   images: string[];
 }
 
 export default function WorkSlider({ images }: Props) {
-  const [current, setCurrent] = useState(0);
+  const total = images.length;
+  // [clone of last, ...real slides, clone of first]
+  const slides = [images[total - 1], ...images, images[0]];
+
+  const [index, setIndex] = useState(1); // 1 = first real slide
+  const [transitionEnabled, setTransitionEnabled] = useState(true);
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
 
@@ -16,8 +21,38 @@ export default function WorkSlider({ images }: Props) {
   const touchCurrentX = useRef(0);
   const isHorizontal = useRef<boolean | null>(null);
 
-  const prev = () => setCurrent((i) => (i === 0 ? images.length - 1 : i - 1));
-  const next = () => setCurrent((i) => (i === images.length - 1 ? 0 : i + 1));
+  // Real slide index for dot indicators (0-based)
+  const realIndex = (((index - 1) % total) + total) % total;
+
+  const prev = () => {
+    setTransitionEnabled(true);
+    setIndex((i) => i - 1);
+  };
+
+  const next = () => {
+    setTransitionEnabled(true);
+    setIndex((i) => i + 1);
+  };
+
+  const onTransitionEnd = () => {
+    if (index === 0) {
+      // Landed on clone of last — snap to real last without animation
+      setTransitionEnabled(false);
+      setIndex(total);
+    } else if (index === total + 1) {
+      // Landed on clone of first — snap to real first without animation
+      setTransitionEnabled(false);
+      setIndex(1);
+    }
+  };
+
+  // Re-enable transition one frame after the silent snap renders
+  useEffect(() => {
+    if (!transitionEnabled) {
+      const id = requestAnimationFrame(() => setTransitionEnabled(true));
+      return () => cancelAnimationFrame(id);
+    }
+  }, [transitionEnabled]);
 
   const onTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.targetTouches[0].clientX;
@@ -32,7 +67,6 @@ export default function WorkSlider({ images }: Props) {
     const dx = e.targetTouches[0].clientX - touchStartX.current;
     const dy = e.targetTouches[0].clientY - touchStartY.current;
 
-    // Lock drag axis on first movement past 4px
     if (isHorizontal.current === null && Math.hypot(dx, dy) > 4) {
       isHorizontal.current = Math.abs(dx) > Math.abs(dy);
     }
@@ -42,11 +76,7 @@ export default function WorkSlider({ images }: Props) {
     }
 
     touchCurrentX.current = e.targetTouches[0].clientX;
-
-    // Rubber-band resistance at first and last slide
-    const atEdge = (current === 0 && dx > 0) || (current === images.length - 1 && dx < 0);
-
-    setDragOffset(atEdge ? dx * 0.2 : dx);
+    setDragOffset(dx);
   };
 
   const onTouchEnd = () => {
@@ -56,20 +86,15 @@ export default function WorkSlider({ images }: Props) {
       return;
     }
 
-    // Use refs so we read the latest values regardless of render cycle
     const dx = touchCurrentX.current - touchStartX.current;
     const containerWidth = containerRef.current?.offsetWidth ?? window.innerWidth;
     const elapsed = Math.max(Date.now() - touchStartTime.current, 1);
-    const velocity = dx / elapsed; // px/ms
+    const velocity = dx / elapsed;
 
     if (dx < -(containerWidth * 0.3) || velocity < -0.4) {
-      if (current < images.length - 1) {
-        setCurrent((i) => i + 1);
-      }
+      next();
     } else if (dx > containerWidth * 0.3 || velocity > 0.4) {
-      if (current > 0) {
-        setCurrent((i) => i - 1);
-      }
+      prev();
     }
 
     setIsDragging(false);
@@ -89,11 +114,15 @@ export default function WorkSlider({ images }: Props) {
           <div
             className="flex h-full"
             style={{
-              transform: `translateX(calc(-${current * 100}% + ${dragOffset}px))`,
-              transition: isDragging ? "none" : "transform 350ms cubic-bezier(0.25, 1, 0.5, 1)",
+              transform: `translateX(calc(-${index * 100}% + ${dragOffset}px))`,
+              transition:
+                isDragging || !transitionEnabled
+                  ? "none"
+                  : "transform 350ms cubic-bezier(0.25, 1, 0.5, 1)",
             }}
+            onTransitionEnd={onTransitionEnd}
           >
-            {images.map((src, i) => (
+            {slides.map((src, i) => (
               <div
                 key={i}
                 className="w-full h-full flex-shrink-0 flex items-center justify-center px-6 md:px-0"
@@ -153,10 +182,13 @@ export default function WorkSlider({ images }: Props) {
         {images.map((_, i) => (
           <button
             key={i}
-            onClick={() => setCurrent(i)}
+            onClick={() => {
+              setTransitionEnabled(true);
+              setIndex(i + 1);
+            }}
             aria-label={`Go to slide ${i + 1}`}
-            aria-current={i === current ? "true" : undefined}
-            className={`w-2 h-2 rounded-full transition-colors ${i === current ? "bg-black" : "bg-black/30"}`}
+            aria-current={i === realIndex ? "true" : undefined}
+            className={`w-2 h-2 rounded-full transition-colors ${i === realIndex ? "bg-black" : "bg-black/30"}`}
           />
         ))}
       </div>
