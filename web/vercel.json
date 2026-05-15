@@ -7,16 +7,13 @@
       "config": { "distDir": "build/client" }
     },
     {
-      "src": "api/index.js",
-      "use": "@vercel/node",
-      "config": {
-        "bundle": false,
-        "includeFiles": ["build/server/**", "public/**"]
-      }
+      "src": "api/contact.js",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
     { "handle": "filesystem" },
-    { "src": "/(.*)", "dest": "/api/index" }
+    { "src": "/api/contact", "dest": "/api/contact" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }

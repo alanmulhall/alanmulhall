@@ -1,16 +1,14 @@
-import { useEffect, useRef } from "react";
-import { useFetcher } from "react-router";
+import { useEffect, useRef, useState } from "react";
 
 interface Props {
   onClose: () => void;
 }
 
 export default function ContactModal({ onClose }: Props) {
-  const fetcher = useFetcher();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
-  const isSubmitting = fetcher.state === "submitting";
-  const success = fetcher.data?.success;
-  const error = fetcher.data?.error;
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -27,6 +25,35 @@ export default function ContactModal({ onClose }: Props) {
 
   const handleOverlayClick = (e: React.MouseEvent) => {
     if (e.target === overlayRef.current) onClose();
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setError(null);
+
+    const formData = new FormData(e.currentTarget);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        body: JSON.stringify({
+          name: formData.get("name"),
+          email: formData.get("email"),
+          message: formData.get("message"),
+        }),
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await res.json();
+      if (data.success) {
+        setSuccess(true);
+      } else {
+        setError(data.error ?? "Failed to send. Please try again.");
+      }
+    } catch {
+      setError("Failed to send. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -52,7 +79,7 @@ export default function ContactModal({ onClose }: Props) {
         {success ? (
           <p className="font-mono text-sm text-gray-500">Message sent. I'll be in touch soon.</p>
         ) : (
-          <fetcher.Form method="post" className="flex flex-col gap-4">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div className="flex flex-col gap-1">
               <label className="font-mono text-xs text-gray-500" htmlFor="name">Name</label>
               <input
@@ -97,7 +124,7 @@ export default function ContactModal({ onClose }: Props) {
             >
               {isSubmitting ? "Sending…" : "Send"}
             </button>
-          </fetcher.Form>
+          </form>
         )}
       </div>
     </div>
