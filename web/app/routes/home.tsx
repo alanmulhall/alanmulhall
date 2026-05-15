@@ -46,7 +46,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
 
   return (
     <div className="h-screen flex flex-col bg-white text-black overflow-hidden">
-      <header className="px-10 py-4 md:pt-8 md:pb-16 flex items-center justify-between flex-shrink-0">
+      <header className="px-6 md:px-10 py-4 md:pt-8 md:pb-16 flex items-center justify-between flex-shrink-0">
         <div className="flex flex-col gap-1">
           <span className="font-mono text-[1.75rem] font-medium tracking-tight">Alan Mulhall</span>
           <div className="flex items-center gap-2">
@@ -70,7 +70,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
       </header>
       {contactOpen && <ContactModal onClose={() => setContactOpen(false)} />}
       <WorkSlider images={images} />
-      <footer className="px-10 py-6 flex-shrink-0 flex items-center justify-between">
+      <footer className="px-6 md:px-10 py-6 mt-[62px] flex-shrink-0 flex items-center justify-between">
         <span className="font-mono text-sm text-gray-400">
           Alan Mulhall &copy; {new Date().getFullYear()}
         </span>
