@@ -49,7 +49,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
     <div className="h-screen flex flex-col bg-white text-black overflow-hidden">
       <header className="px-10 py-4 md:pt-8 md:pb-16 flex items-center justify-between flex-shrink-0">
         <div className="flex flex-col gap-1">
-          <span className="font-mono text-[1.75rem] font-medium tracking-tight">Alan Mulhall</span>
+          <span className="font-mono text-[2.5rem] font-medium tracking-tight">Alan Mulhall</span>
           <button
             onClick={() => setContactOpen(true)}
             className="font-mono text-base text-gray-400 hover:text-black transition-colors text-left underline"
