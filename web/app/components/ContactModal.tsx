@@ -36,8 +36,11 @@ export default function ContactModal({ onClose }: Props) {
     const errs: Record<string, string> = {};
     const email = String(data.get("email") ?? "").trim();
     if (!String(data.get("name") ?? "").trim()) errs.name = "Name is required.";
-    if (!email) errs.email = "Email is required.";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errs.email = "Please enter a valid email.";
+    if (!email) {
+      errs.email = "Email is required.";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errs.email = "Please enter a valid email.";
+    }
     if (!String(data.get("message") ?? "").trim()) errs.message = "Message is required.";
     if (Object.keys(errs).length > 0) {
       setFieldErrors(errs);
