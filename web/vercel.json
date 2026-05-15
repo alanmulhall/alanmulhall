@@ -5,15 +5,6 @@
       "src": "package.json",
       "use": "@vercel/static-build",
       "config": { "distDir": "build/client" }
-    },
-    {
-      "src": "api/contact.js",
-      "use": "@vercel/node"
     }
-  ],
-  "routes": [
-    { "handle": "filesystem" },
-    { "src": "/api/contact", "dest": "/api/contact" },
-    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }

@@ -1,7 +1,10 @@
+import { join } from "node:path";
 import { useState } from "react";
+import { Resend } from "resend";
 import type { Route } from "./+types/home";
 import WorkSlider from "../components/WorkSlider";
 import ContactModal from "../components/ContactModal";
+import { getWorkImages } from "../utils/getWorkImages";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -10,16 +13,36 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-const images = [
-  "/images/work/girl-with-pearl-earring.jpg",
-  "/images/work/impression-sunrise.jpg",
-  "/images/work/mona-lisa.jpg",
-  "/images/work/starry-night.jpg",
-  "/images/work/the-great-wave.jpg",
-  "/images/work/the-scream.jpg",
-];
+export async function action({ request }: Route.ActionArgs) {
+  const formData = await request.formData();
+  const name = String(formData.get("name") ?? "").trim();
+  const email = String(formData.get("email") ?? "").trim();
+  const message = String(formData.get("message") ?? "").trim();
 
-export default function Home({}: Route.ComponentProps) {
+  if (!name || !email || !message) {
+    return { success: false, error: "All fields are required." };
+  }
+
+  const resend = new Resend(process.env.RESEND_API_KEY);
+  const { error } = await resend.emails.send({
+    from: "Contact Form <onboarding@resend.dev>",
+    to: "alanmulhall@gmail.com",
+    subject: `New message from ${name}`,
+    text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
+  });
+
+  if (error) return { success: false, error: "Failed to send. Please try again." };
+  return { success: true };
+}
+
+export async function loader() {
+  const dir = join(process.cwd(), "public/images/work");
+  const images = await getWorkImages(dir);
+  return { images };
+}
+
+export default function Home({ loaderData }: Route.ComponentProps) {
+  const { images } = loaderData;
   const [contactOpen, setContactOpen] = useState(false);
 
   return (
