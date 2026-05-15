@@ -47,14 +47,14 @@ export default function ContactModal({ onClose }: Props) {
           </svg>
         </button>
 
-        <h2 className="font-mono text-lg font-medium mb-6">Contact</h2>
+        <h2 className="font-mono text-2xl font-medium mb-6">Contact</h2>
 
         {success ? (
           <p className="font-mono text-sm text-gray-500">Message sent. I'll be in touch soon.</p>
         ) : (
           <fetcher.Form method="post" className="flex flex-col gap-4">
             <div className="flex flex-col gap-1">
-              <label className="font-mono text-xs text-gray-500" htmlFor="name">Name</label>
+              <label className="font-mono text-base text-gray-500" htmlFor="name">Name</label>
               <input
                 id="name"
                 name="name"
@@ -65,7 +65,7 @@ export default function ContactModal({ onClose }: Props) {
             </div>
 
             <div className="flex flex-col gap-1">
-              <label className="font-mono text-xs text-gray-500" htmlFor="email">Email</label>
+              <label className="font-mono text-base text-gray-500" htmlFor="email">Email</label>
               <input
                 id="email"
                 name="email"
@@ -76,7 +76,7 @@ export default function ContactModal({ onClose }: Props) {
             </div>
 
             <div className="flex flex-col gap-1">
-              <label className="font-mono text-xs text-gray-500" htmlFor="message">Message</label>
+              <label className="font-mono text-base text-gray-500" htmlFor="message">Message</label>
               <textarea
                 id="message"
                 name="message"
