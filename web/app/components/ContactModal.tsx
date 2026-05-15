@@ -34,8 +34,10 @@ export default function ContactModal({ onClose }: Props) {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
     const errs: Record<string, string> = {};
+    const email = String(data.get("email") ?? "").trim();
     if (!String(data.get("name") ?? "").trim()) errs.name = "Name is required.";
-    if (!String(data.get("email") ?? "").trim()) errs.email = "Email is required.";
+    if (!email) errs.email = "Email is required.";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errs.email = "Please enter a valid email.";
     if (!String(data.get("message") ?? "").trim()) errs.message = "Message is required.";
     if (Object.keys(errs).length > 0) {
       setFieldErrors(errs);
@@ -68,7 +70,7 @@ export default function ContactModal({ onClose }: Props) {
         {success ? (
           <p className="font-mono text-sm text-gray-500">Message sent. I'll be in touch soon.</p>
         ) : (
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
             <div className="flex flex-col gap-1">
               <label className="font-mono text-base text-gray-500" htmlFor="name">Name</label>
               <input
