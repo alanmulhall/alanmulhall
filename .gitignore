@@ -13,6 +13,7 @@
 web/node_modules/
 web/build/
 web/.react-router/
+web/.vercel/
 web/playwright-report/
 web/test-results/
 
