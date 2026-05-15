@@ -1,0 +1,58 @@
+<% content_for :page_title, "Images" %>
+<% content_for :page_action do %>
+  <%= link_to "Add image", new_admin_image_path, class: "btn btn-primary" %>
+<% end %>
+
+<div class="card">
+  <div class="table-responsive">
+    <table class="table table-vcenter card-table">
+      <thead>
+        <tr>
+          <th style="width: 80px">Order</th>
+          <th style="width: 100px">Thumbnail</th>
+          <th>Title</th>
+          <th>Medium</th>
+          <th>Year</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @images.each do |image| %>
+          <tr>
+            <td>
+              <div class="d-flex flex-column gap-1">
+                <%= button_to "↑", move_up_admin_image_path(image), method: :patch,
+                    class: "btn btn-sm btn-ghost-secondary px-2 py-0",
+                    disabled: image.position == @images.first.position %>
+                <span class="text-center text-muted small"><%= image.position %></span>
+                <%= button_to "↓", move_down_admin_image_path(image), method: :patch,
+                    class: "btn btn-sm btn-ghost-secondary px-2 py-0",
+                    disabled: image.position == @images.last.position %>
+              </div>
+            </td>
+            <td>
+              <% if image.cloudinary_public_id %>
+                <img src="<%= image.thumbnail_url %>" alt="<%= image.title %>"
+                     style="width: 80px; height: 60px; object-fit: cover; border-radius: 4px;" />
+              <% end %>
+            </td>
+            <td class="fw-medium"><%= image.title %></td>
+            <td class="text-muted"><%= image.medium %></td>
+            <td class="text-muted"><%= image.year %></td>
+            <td class="text-end">
+              <%= link_to "Edit", edit_admin_image_path(image), class: "btn btn-sm btn-ghost-secondary" %>
+              <%= button_to "Delete", admin_image_path(image), method: :delete,
+                  class: "btn btn-sm btn-ghost-danger",
+                  data: { confirm: "Delete \"#{image.title}\"?" } %>
+            </td>
+          </tr>
+        <% end %>
+        <% if @images.empty? %>
+          <tr>
+            <td colspan="6" class="text-center text-muted py-5">No images yet. Add one to get started.</td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

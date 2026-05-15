@@ -1,0 +1,28 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ── web/ (React Router / Node) ──────────────────────────────────────────────
+web/node_modules/
+web/build/
+web/.react-router/
+web/playwright-report/
+web/test-results/
+
+# ── admin/ (Rails) ──────────────────────────────────────────────────────────
+admin/.bundle/
+admin/log/
+admin/tmp/
+admin/public/assets/
+admin/storage/
+admin/vendor/bundle/
+admin/.env*
+admin/config/*.key
+admin/config/master.key

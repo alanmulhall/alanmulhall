@@ -1,0 +1,53 @@
+<%= form_with model: [:admin, image], multipart: true do |f| %>
+  <% if image.errors.any? %>
+    <div class="alert alert-danger mb-3">
+      <ul class="mb-0">
+        <% image.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="mb-3">
+        <%= f.label :file, "Image file", class: "form-label" %>
+        <%= f.file_field :file, class: "form-control", accept: "image/*" %>
+        <% if image.cloudinary_public_id.present? %>
+          <div class="mt-2">
+            <img src="<%= image.thumbnail_url %>" alt="Current image"
+                 style="height: 120px; object-fit: cover; border-radius: 4px;" />
+            <p class="form-hint mt-1">Leave blank to keep the current image.</p>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="mb-3">
+        <%= f.label :title, class: "form-label required" %>
+        <%= f.text_field :title, class: "form-control", placeholder: "West Cork" %>
+      </div>
+
+      <div class="mb-3">
+        <%= f.label :medium, class: "form-label" %>
+        <%= f.text_field :medium, class: "form-control", placeholder: "Oil on canvas" %>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <%= f.label :year, class: "form-label" %>
+          <%= f.number_field :year, class: "form-control", placeholder: Date.today.year %>
+        </div>
+        <div class="col-md-6 mb-3">
+          <%= f.label :position, class: "form-label required" %>
+          <%= f.number_field :position, class: "form-control", min: 1 %>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-footer d-flex gap-2">
+      <%= f.submit image.new_record? ? "Add image" : "Save changes", class: "btn btn-primary" %>
+      <%= link_to "Cancel", admin_images_path, class: "btn btn-ghost-secondary" %>
+    </div>
+  </div>
+<% end %>

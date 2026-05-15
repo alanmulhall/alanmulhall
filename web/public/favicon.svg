@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <circle cx="16" cy="16" r="16" fill="black"/>
+  <text
+    x="16"
+    y="24"
+    text-anchor="middle"
+    font-family="'Courier New', Courier, monospace"
+    font-size="24"
+    font-weight="600"
+    fill="white"
+  >A</text>
+</svg>
