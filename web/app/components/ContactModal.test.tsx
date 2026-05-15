@@ -12,7 +12,10 @@ vi.mock("react-router", async (importOriginal) => ({
   useFetcher: () => ({
     state: mockFetcher.state,
     data: mockFetcher.data,
-    Form: ({ children, ...props }: React.FormHTMLAttributes<HTMLFormElement> & { children?: React.ReactNode }) => (
+    Form: ({
+      children,
+      ...props
+    }: React.FormHTMLAttributes<HTMLFormElement> & { children?: React.ReactNode }) => (
       <form {...props}>{children}</form>
     ),
   }),

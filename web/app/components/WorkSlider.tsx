@@ -37,14 +37,14 @@ export default function WorkSlider({ images }: Props) {
       isHorizontal.current = Math.abs(dx) > Math.abs(dy);
     }
 
-    if (!isHorizontal.current) return;
+    if (!isHorizontal.current) {
+      return;
+    }
 
     touchCurrentX.current = e.targetTouches[0].clientX;
 
     // Rubber-band resistance at first and last slide
-    const atEdge =
-      (current === 0 && dx > 0) ||
-      (current === images.length - 1 && dx < 0);
+    const atEdge = (current === 0 && dx > 0) || (current === images.length - 1 && dx < 0);
 
     setDragOffset(atEdge ? dx * 0.2 : dx);
   };
@@ -63,9 +63,13 @@ export default function WorkSlider({ images }: Props) {
     const velocity = dx / elapsed; // px/ms
 
     if (dx < -(containerWidth * 0.3) || velocity < -0.4) {
-      if (current < images.length - 1) setCurrent((i) => i + 1);
+      if (current < images.length - 1) {
+        setCurrent((i) => i + 1);
+      }
     } else if (dx > containerWidth * 0.3 || velocity > 0.4) {
-      if (current > 0) setCurrent((i) => i - 1);
+      if (current > 0) {
+        setCurrent((i) => i - 1);
+      }
     }
 
     setIsDragging(false);
@@ -90,7 +94,10 @@ export default function WorkSlider({ images }: Props) {
             }}
           >
             {images.map((src, i) => (
-              <div key={i} className="w-full h-full flex-shrink-0 flex items-center justify-center px-6 md:px-0">
+              <div
+                key={i}
+                className="w-full h-full flex-shrink-0 flex items-center justify-center px-6 md:px-0"
+              >
                 <img
                   src={src}
                   alt=""
@@ -108,7 +115,16 @@ export default function WorkSlider({ images }: Props) {
           aria-label="Previous"
           className="hidden md:flex absolute left-6 top-1/2 -translate-y-1/2 w-10 h-10 items-center justify-center text-black hover:opacity-50 transition-opacity"
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <polyline points="15 18 9 12 15 6" />
           </svg>
         </button>
@@ -117,7 +133,16 @@ export default function WorkSlider({ images }: Props) {
           aria-label="Next"
           className="hidden md:flex absolute right-6 top-1/2 -translate-y-1/2 w-10 h-10 items-center justify-center text-black hover:opacity-50 transition-opacity"
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <polyline points="9 18 15 12 9 6" />
           </svg>
         </button>

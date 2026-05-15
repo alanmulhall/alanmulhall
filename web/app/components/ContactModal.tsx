@@ -72,7 +72,15 @@ export default function ContactModal({ onClose }: Props) {
           aria-label="Close"
           className="absolute top-5 right-5 text-black hover:opacity-50 transition-opacity"
         >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          >
             <line x1="18" y1="6" x2="6" y2="18" />
             <line x1="6" y1="6" x2="18" y2="18" />
           </svg>
@@ -85,7 +93,9 @@ export default function ContactModal({ onClose }: Props) {
         ) : (
           <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
             <div className="flex flex-col gap-1">
-              <label className="font-mono text-base text-gray-500" htmlFor="name">Name</label>
+              <label className="font-mono text-base text-gray-500" htmlFor="name">
+                Name
+              </label>
               <input
                 id="name"
                 name="name"
@@ -98,7 +108,9 @@ export default function ContactModal({ onClose }: Props) {
             </div>
 
             <div className="flex flex-col gap-1">
-              <label className="font-mono text-base text-gray-500" htmlFor="email">Email</label>
+              <label className="font-mono text-base text-gray-500" htmlFor="email">
+                Email
+              </label>
               <input
                 id="email"
                 name="email"
@@ -111,7 +123,9 @@ export default function ContactModal({ onClose }: Props) {
             </div>
 
             <div className="flex flex-col gap-1">
-              <label className="font-mono text-base text-gray-500" htmlFor="message">Message</label>
+              <label className="font-mono text-base text-gray-500" htmlFor="message">
+                Message
+              </label>
               <textarea
                 id="message"
                 name="message"
@@ -123,9 +137,7 @@ export default function ContactModal({ onClose }: Props) {
               )}
             </div>
 
-            {serverError && (
-              <p className="font-mono text-sm text-red-500">{serverError}</p>
-            )}
+            {serverError && <p className="font-mono text-sm text-red-500">{serverError}</p>}
 
             <button
               type="submit"
