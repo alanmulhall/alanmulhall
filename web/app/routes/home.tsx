@@ -52,7 +52,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
           <span className="font-mono text-[1.75rem] font-medium tracking-tight">Alan Mulhall</span>
           <button
             onClick={() => setContactOpen(true)}
-            className="font-mono text-sm text-gray-400 hover:text-black transition-colors text-left underline"
+            className="font-mono text-base text-gray-400 hover:text-black transition-colors text-left underline"
           >
             contact
           </button>
