@@ -93,7 +93,7 @@ export default function ContactModal({ onClose }: Props) {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="font-mono text-sm bg-black text-white py-2 hover:opacity-70 transition-opacity mt-2 disabled:opacity-40"
+              className="font-mono text-base bg-black text-white py-2 hover:opacity-70 transition-opacity mt-2 disabled:opacity-40"
             >
               {isSubmitting ? "Sending…" : "Send"}
             </button>
