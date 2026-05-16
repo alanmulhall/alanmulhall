@@ -1,7 +1,10 @@
 class Image < ApplicationRecord
+  KINDS = %w[painting drawing digital].freeze
+
   validates :title, presence: true
   validates :position, presence: true, numericality: { only_integer: true, greater_than: 0 }
   validates :cloudinary_public_id, presence: true
+  validates :kind, inclusion: { in: KINDS }, allow_blank: true
 
   default_scope { order(:position) }
 

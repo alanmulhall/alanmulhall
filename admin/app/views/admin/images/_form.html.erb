@@ -29,6 +29,14 @@
       </div>
 
       <div class="mb-3">
+        <%= f.label :kind, class: "form-label" %>
+        <%= f.select :kind,
+              [["— select —", ""]] + Image::KINDS.map { |k| [k.capitalize, k] },
+              {},
+              class: "form-select" %>
+      </div>
+
+      <div class="mb-3">
         <%= f.label :medium, class: "form-label" %>
         <%= f.text_field :medium, class: "form-control", placeholder: "Oil on canvas" %>
       </div>
