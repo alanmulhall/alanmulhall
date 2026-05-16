@@ -55,7 +55,9 @@ jobs:
       RAILS_ENV: test
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/admin_test
       RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
-      CLOUDINARY_URL: cloudinary://test_key:test_secret@test_cloud
+      CLOUDINARY_CLOUD_NAME: test_cloud
+      CLOUDINARY_API_KEY: test_key
+      CLOUDINARY_API_SECRET: test_secret
 
     steps:
       - uses: actions/checkout@v4
