@@ -5,9 +5,9 @@ import WorkSlider from "./WorkSlider";
 const images = ["/img/a.jpg", "/img/b.jpg", "/img/c.jpg"];
 
 describe("WorkSlider", () => {
-  it("renders an img element for each image", () => {
+  it("renders an img element for each image plus two clones", () => {
     const { container } = render(<WorkSlider images={images} />);
-    expect(container.querySelectorAll("img")).toHaveLength(3);
+    expect(container.querySelectorAll("img")).toHaveLength(images.length + 2);
   });
 
   it("renders one dot per image", () => {
