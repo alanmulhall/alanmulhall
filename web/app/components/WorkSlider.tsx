@@ -10,6 +10,7 @@ export default function WorkSlider({ images }: Props) {
   const slides = [images[total - 1], ...images, images[0]];
 
   const [index, setIndex] = useState(1); // 1 = first real slide
+  const indexRef = useRef(1); // always current — avoids stale closure in onTransitionEnd
   const [transitionEnabled, setTransitionEnabled] = useState(true);
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -26,22 +27,33 @@ export default function WorkSlider({ images }: Props) {
 
   const prev = () => {
     setTransitionEnabled(true);
-    setIndex((i) => i - 1);
+    setIndex((i) => {
+      const next = Math.max(i - 1, 0);
+      indexRef.current = next;
+      return next;
+    });
   };
 
   const next = () => {
     setTransitionEnabled(true);
-    setIndex((i) => i + 1);
+    setIndex((i) => {
+      const next = Math.min(i + 1, total + 1);
+      indexRef.current = next;
+      return next;
+    });
   };
 
   const onTransitionEnd = () => {
-    if (index === 0) {
+    const i = indexRef.current;
+    if (i === 0) {
       // Landed on clone of last — snap to real last without animation
       setTransitionEnabled(false);
+      indexRef.current = total;
       setIndex(total);
-    } else if (index === total + 1) {
+    } else if (i === total + 1) {
       // Landed on clone of first — snap to real first without animation
       setTransitionEnabled(false);
+      indexRef.current = 1;
       setIndex(1);
     }
   };
@@ -184,6 +196,7 @@ export default function WorkSlider({ images }: Props) {
             key={i}
             onClick={() => {
               setTransitionEnabled(true);
+              indexRef.current = i + 1;
               setIndex(i + 1);
             }}
             aria-label={`Go to slide ${i + 1}`}
