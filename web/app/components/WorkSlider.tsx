@@ -158,11 +158,18 @@ export default function WorkSlider({ images }: Props) {
                 key={i}
                 className="w-full h-full flex-shrink-0 flex items-center justify-center px-6 md:px-0"
               >
-                <div className="h-full flex flex-col" style={{ width: "fit-content" }}>
+                <div
+                  className="h-full flex flex-col justify-center"
+                  style={{ width: "fit-content" }}
+                >
                   <img
                     src={slide.url}
                     alt=""
-                    className="flex-1 min-h-0 w-auto object-contain cursor-zoom-in"
+                    className="object-contain cursor-zoom-in"
+                    style={{
+                      height: slide.title ? "calc(100% - 2rem)" : "100%",
+                      width: "auto",
+                    }}
                     draggable={false}
                     onClick={() => {
                       if (Math.abs(dragOffset) < 5) {
@@ -171,10 +178,7 @@ export default function WorkSlider({ images }: Props) {
                     }}
                   />
                   {slide.title && (
-                    <span
-                      className="font-mono text-gray-400 mt-2 flex-none"
-                      style={{ fontSize: "12px" }}
-                    >
+                    <span className="font-mono text-gray-400 mt-2" style={{ fontSize: "12px" }}>
                       {slide.title}
                     </span>
                   )}
