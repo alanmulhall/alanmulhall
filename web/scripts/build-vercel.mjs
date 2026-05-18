@@ -1,5 +1,5 @@
 import { execSync } from "node:child_process";
-import { cpSync, mkdirSync, writeFileSync, rmSync, existsSync } from "node:fs";
+import { cpSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -41,14 +41,7 @@ execSync(
   { cwd: root, stdio: "inherit" }
 );
 
-// 6. Copy public/images into the function so getWorkImages can read the filesystem
-const imagesSource = join(root, "public/images");
-if (existsSync(imagesSource)) {
-  console.log("[build] Copying public/images into function bundle...");
-  cpSync(imagesSource, join(funcDir, "public/images"), { recursive: true });
-}
-
-// 7. Function config
+// 6. Function config
 writeFileSync(
   join(funcDir, ".vc-config.json"),
   JSON.stringify(

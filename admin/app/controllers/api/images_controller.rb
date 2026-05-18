@@ -1,6 +1,6 @@
 class Api::ImagesController < ApplicationController
   def index
-    images = Image.all.map do |img|
+    images = Image.where(visible: true).map do |img|
       {
         id: img.id,
         title: img.title,

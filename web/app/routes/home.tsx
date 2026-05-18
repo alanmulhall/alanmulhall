@@ -1,10 +1,8 @@
-import { join } from "node:path";
 import { useState } from "react";
 import { Resend } from "resend";
 import type { Route } from "./+types/home";
 import WorkSlider from "../components/WorkSlider";
 import ContactModal from "../components/ContactModal";
-import { getWorkImages } from "../utils/getWorkImages";
 
 export function meta(_: Route.MetaArgs) {
   return [{ title: "Alan Mulhall" }, { name: "description", content: "Alan Mulhall" }];
@@ -35,8 +33,13 @@ export async function action({ request }: Route.ActionArgs) {
 }
 
 export async function loader() {
-  const dir = join(process.cwd(), "public/images/work");
-  const images = await getWorkImages(dir);
+  const apiUrl = process.env.RAILS_API_URL ?? "http://localhost:3000";
+  const res = await fetch(`${apiUrl}/api/images`);
+  if (!res.ok) {
+    return { images: [] };
+  }
+  const data = await res.json();
+  const images: string[] = data.map((img: { url: string }) => img.url).filter(Boolean);
   return { images };
 }
 
