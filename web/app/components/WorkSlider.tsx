@@ -158,11 +158,11 @@ export default function WorkSlider({ images }: Props) {
                 key={i}
                 className="w-full h-full flex-shrink-0 flex items-center justify-center px-6 md:px-0"
               >
-                <div className="flex flex-col max-h-full min-h-0">
+                <div className="h-full flex flex-col" style={{ width: "fit-content" }}>
                   <img
                     src={slide.url}
                     alt=""
-                    className="flex-1 min-h-0 w-auto max-w-full object-contain cursor-zoom-in"
+                    className="flex-1 min-h-0 w-auto object-contain cursor-zoom-in"
                     draggable={false}
                     onClick={() => {
                       if (Math.abs(dragOffset) < 5) {
