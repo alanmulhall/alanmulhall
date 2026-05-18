@@ -83,7 +83,7 @@ class Admin::ImagesController < Admin::BaseController
     end
 
     Cloudinary::Uploader.upload(file.path, folder: "mulhall-portfolio")
-  rescue Cloudinary::Error => e
+  rescue CloudinaryException => e
     Rails.logger.error("Cloudinary upload failed: #{e.message}")
     nil
   end
