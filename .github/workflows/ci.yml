@@ -75,6 +75,10 @@ jobs:
           bundler-cache: true
           working-directory: admin
 
+      - run: bundle exec rubocop --format github
+
+      - run: bundle exec brakeman --no-pager -q
+
       - run: bin/rails db:schema:load
 
       - run: bundle exec rspec

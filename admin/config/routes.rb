@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
   namespace :admin do
-    resources :images, except: [:show] do
+    resources :images, except: [ :show ] do
       member do
         patch :move_up
         patch :move_down
@@ -12,7 +12,7 @@ Rails.application.routes.draw do
   end
 
   namespace :api do
-    resources :images, only: [:index]
+    resources :images, only: [ :index ]
   end
 
   root to: redirect("/admin/images")

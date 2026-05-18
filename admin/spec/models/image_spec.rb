@@ -38,7 +38,7 @@ RSpec.describe Image, type: :model do
       create(:image, position: 3)
       create(:image, position: 1)
       create(:image, position: 2)
-      expect(Image.all.map(&:position)).to eq([1, 2, 3])
+      expect(Image.all.map(&:position)).to eq([ 1, 2, 3 ])
     end
   end
 
