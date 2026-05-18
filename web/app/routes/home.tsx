@@ -39,7 +39,9 @@ export async function loader() {
     return { images: [] };
   }
   const data = await res.json();
-  const images: string[] = data.map((img: { url: string }) => img.url).filter(Boolean);
+  const images: { url: string; title: string }[] = data
+    .filter((img: { url: string }) => Boolean(img.url))
+    .map((img: { url: string; title: string }) => ({ url: img.url, title: img.title ?? "" }));
   return { images };
 }
 

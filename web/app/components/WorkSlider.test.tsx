@@ -2,9 +2,20 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
 import WorkSlider from "./WorkSlider";
 
-const images = ["/img/a.jpg", "/img/b.jpg", "/img/c.jpg"];
+const images = [
+  { url: "/img/a.jpg", title: "Painting A" },
+  { url: "/img/b.jpg", title: "Painting B" },
+  { url: "/img/c.jpg", title: "Painting C" },
+];
 
 describe("WorkSlider", () => {
+  it("renders the title of each slide", () => {
+    render(<WorkSlider images={images} />);
+    expect(screen.getAllByText("Painting A")).toHaveLength(2); // real + clone
+    expect(screen.getByText("Painting B")).toBeInTheDocument();
+    expect(screen.getAllByText("Painting C")).toHaveLength(2); // real + clone
+  });
+
   it("renders an img element for each image plus two clones", () => {
     const { container } = render(<WorkSlider images={images} />);
     expect(container.querySelectorAll("img")).toHaveLength(images.length + 2);
