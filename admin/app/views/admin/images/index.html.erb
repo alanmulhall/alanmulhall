@@ -11,8 +11,11 @@
           <th style="width: 80px">Order</th>
           <th style="width: 100px">Thumbnail</th>
           <th>Title</th>
+          <th>Kind</th>
           <th>Medium</th>
+          <th>Dimensions</th>
           <th>Year</th>
+          <th>Visible</th>
           <th></th>
         </tr>
       </thead>
@@ -37,8 +40,17 @@
               <% end %>
             </td>
             <td class="fw-medium"><%= image.title %></td>
+            <td class="text-muted"><%= image.kind&.capitalize %></td>
             <td class="text-muted"><%= image.medium %></td>
+            <td class="text-muted"><%= image.dimensions %></td>
             <td class="text-muted"><%= image.year %></td>
+            <td>
+              <% if image.visible? %>
+                <span class="badge bg-success-lt">Yes</span>
+              <% else %>
+                <span class="badge bg-secondary-lt">No</span>
+              <% end %>
+            </td>
             <td class="text-end">
               <%= link_to "Edit", edit_admin_image_path(image), class: "btn btn-sm btn-ghost-secondary" %>
               <%= button_to "Delete", admin_image_path(image), method: :delete,
@@ -49,7 +61,7 @@
         <% end %>
         <% if @images.empty? %>
           <tr>
-            <td colspan="6" class="text-center text-muted py-5">No images yet. Add one to get started.</td>
+            <td colspan="9" class="text-center text-muted py-5">No images yet. Add one to get started.</td>
           </tr>
         <% end %>
       </tbody>
