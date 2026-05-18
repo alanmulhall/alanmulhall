@@ -156,24 +156,29 @@ export default function WorkSlider({ images }: Props) {
             {slides.map((slide, i) => (
               <div
                 key={i}
-                className="w-full h-full flex-shrink-0 flex flex-col items-start justify-center px-6 md:px-0"
+                className="w-full h-full flex-shrink-0 flex items-center justify-center px-6 md:px-0"
               >
-                <img
-                  src={slide.url}
-                  alt=""
-                  className="max-h-full w-auto max-w-full object-contain cursor-zoom-in"
-                  draggable={false}
-                  onClick={() => {
-                    if (Math.abs(dragOffset) < 5) {
-                      setLightbox(slide.url);
-                    }
-                  }}
-                />
-                {slide.title && (
-                  <span className="font-mono text-gray-400 mt-2" style={{ fontSize: "12px" }}>
-                    {slide.title}
-                  </span>
-                )}
+                <div className="flex flex-col max-h-full min-h-0">
+                  <img
+                    src={slide.url}
+                    alt=""
+                    className="flex-1 min-h-0 w-auto max-w-full object-contain cursor-zoom-in"
+                    draggable={false}
+                    onClick={() => {
+                      if (Math.abs(dragOffset) < 5) {
+                        setLightbox(slide.url);
+                      }
+                    }}
+                  />
+                  {slide.title && (
+                    <span
+                      className="font-mono text-gray-400 mt-2 flex-none"
+                      style={{ fontSize: "12px" }}
+                    >
+                      {slide.title}
+                    </span>
+                  )}
+                </div>
               </div>
             ))}
           </div>
