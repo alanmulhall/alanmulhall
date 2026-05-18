@@ -77,7 +77,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
       <WorkSlider images={images} />
       <footer className="px-6 md:px-10 py-6 mt-[62px] flex-shrink-0 flex items-center justify-between">
         <span className="font-mono text-sm text-gray-400">
-          Alan Mulhall &copy; {new Date().getFullYear()} | {__GIT_HASH__}
+          Alan Mulhall | {__GIT_HASH__} | &copy; {new Date().getFullYear()}
         </span>
         <a
           href="https://www.instagram.com/alanvmulhall/"
