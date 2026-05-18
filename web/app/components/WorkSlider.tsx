@@ -9,6 +9,7 @@ export default function WorkSlider({ images }: Props) {
   // [clone of last, ...real slides, clone of first]
   const slides = [images[total - 1], ...images, images[0]];
 
+  const [lightbox, setLightbox] = useState<string | null>(null);
   const [index, setIndex] = useState(1); // 1 = first real slide
   const indexRef = useRef(1); // always current — avoids stale closure in onTransitionEnd
   const [transitionEnabled, setTransitionEnabled] = useState(true);
@@ -57,6 +58,19 @@ export default function WorkSlider({ images }: Props) {
       setIndex(1);
     }
   };
+
+  useEffect(() => {
+    if (!lightbox) {
+      return;
+    }
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setLightbox(null);
+      }
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [lightbox]);
 
   // Re-enable transition one frame after the silent snap renders
   useEffect(() => {
@@ -142,8 +156,13 @@ export default function WorkSlider({ images }: Props) {
                 <img
                   src={src}
                   alt=""
-                  className="max-h-full w-auto max-w-full object-contain"
+                  className="max-h-full w-auto max-w-full object-contain cursor-zoom-in"
                   draggable={false}
+                  onClick={() => {
+                    if (Math.abs(dragOffset) < 5) {
+                      setLightbox(src);
+                    }
+                  }}
                 />
               </div>
             ))}
@@ -188,6 +207,39 @@ export default function WorkSlider({ images }: Props) {
           </svg>
         </button>
       </div>
+
+      {/* Lightbox */}
+      {lightbox && (
+        <div
+          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-6"
+          onClick={() => setLightbox(null)}
+        >
+          <button
+            onClick={() => setLightbox(null)}
+            aria-label="Close"
+            className="absolute top-5 right-5 text-white hover:opacity-50 transition-opacity"
+          >
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+          <img
+            src={lightbox}
+            alt=""
+            className="max-h-full max-w-full object-contain"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
 
       {/* Dot indicators */}
       <div className="flex justify-center gap-3 mt-5">
