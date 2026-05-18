@@ -9,12 +9,15 @@ class Image < ApplicationRecord
 
   default_scope { order(:position) }
 
-  def display_url(transformations = "w_1200,q_80,f_auto")
+  def display_url
     return nil unless cloudinary_public_id
-    Cloudinary::Utils.cloudinary_url(cloudinary_public_id, transformation: transformations)
+    Cloudinary::Utils.cloudinary_url(cloudinary_public_id,
+      transformation: [{ width: 1200, quality: 80, fetch_format: "auto" }])
   end
 
   def thumbnail_url
-    display_url("w_400,h_300,c_fit,q_70,f_auto")
+    return nil unless cloudinary_public_id
+    Cloudinary::Utils.cloudinary_url(cloudinary_public_id,
+      transformation: [{ width: 400, height: 300, crop: "fit", quality: 70, fetch_format: "auto" }])
   end
 end
