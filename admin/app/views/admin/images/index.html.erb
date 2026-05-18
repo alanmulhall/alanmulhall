@@ -36,7 +36,9 @@
             <td>
               <% if image.cloudinary_public_id %>
                 <img src="<%= image.thumbnail_url %>" alt="<%= image.title %>"
-                     style="width: 80px; height: 60px; object-fit: cover; border-radius: 4px;" />
+                     style="width: 80px; height: 60px; object-fit: cover; border-radius: 4px; cursor: pointer;"
+                     data-bs-toggle="modal" data-bs-target="#image-modal"
+                     data-src="<%= image.display_url %>" data-title="<%= image.title %>" />
               <% end %>
             </td>
             <td class="fw-medium"><%= image.title %></td>
@@ -68,3 +70,25 @@
     </table>
   </div>
 </div>
+
+<div class="modal modal-blur fade" id="image-modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="image-modal-title"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-0 text-center">
+        <img id="image-modal-img" src="" alt="" style="max-width: 100%; max-height: 80vh; object-fit: contain;" />
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('image-modal').addEventListener('show.bs.modal', function(event) {
+    var img = event.relatedTarget;
+    document.getElementById('image-modal-img').src = img.dataset.src;
+    document.getElementById('image-modal-title').textContent = img.dataset.title;
+  });
+</script>
