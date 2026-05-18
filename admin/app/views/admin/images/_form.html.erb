@@ -56,6 +56,13 @@
           <%= f.number_field :position, class: "form-control", min: 1 %>
         </div>
       </div>
+
+      <div class="mb-3">
+        <label class="form-check form-switch">
+          <%= f.check_box :visible, class: "form-check-input" %>
+          <%= f.label :visible, "Visible", class: "form-check-label" %>
+        </label>
+      </div>
     </div>
 
     <div class="card-footer d-flex gap-2">

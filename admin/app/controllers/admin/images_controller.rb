@@ -66,7 +66,7 @@ class Admin::ImagesController < Admin::BaseController
   end
 
   def image_params
-    params.require(:image).permit(:title, :kind, :medium, :dimensions, :year, :position, :file)
+    params.require(:image).permit(:title, :kind, :medium, :dimensions, :year, :position, :visible, :file)
   end
 
   def next_position
