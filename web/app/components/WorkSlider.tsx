@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from "react";
 interface Slide {
   url: string;
   title: string;
+  year: number | null;
 }
 
 interface Props {
@@ -180,6 +181,7 @@ export default function WorkSlider({ images }: Props) {
                   {slide.title && (
                     <span className="font-mono text-gray-400 mt-2" style={{ fontSize: "12px" }}>
                       {slide.title}
+                      {slide.year ? `, ${slide.year}` : ""}
                     </span>
                   )}
                 </div>

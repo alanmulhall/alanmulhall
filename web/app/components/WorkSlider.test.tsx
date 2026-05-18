@@ -3,17 +3,23 @@ import { describe, it, expect } from "vitest";
 import WorkSlider from "./WorkSlider";
 
 const images = [
-  { url: "/img/a.jpg", title: "Painting A" },
-  { url: "/img/b.jpg", title: "Painting B" },
-  { url: "/img/c.jpg", title: "Painting C" },
+  { url: "/img/a.jpg", title: "Painting A", year: 2022 },
+  { url: "/img/b.jpg", title: "Painting B", year: null },
+  { url: "/img/c.jpg", title: "Painting C", year: 2024 },
 ];
 
 describe("WorkSlider", () => {
-  it("renders the title of each slide", () => {
+  it("renders the title and year of each slide", () => {
     render(<WorkSlider images={images} />);
-    expect(screen.getAllByText("Painting A")).toHaveLength(2); // real + clone
+    expect(screen.getAllByText("Painting A, 2022")).toHaveLength(2); // real + clone
     expect(screen.getByText("Painting B")).toBeInTheDocument();
-    expect(screen.getAllByText("Painting C")).toHaveLength(2); // real + clone
+    expect(screen.getAllByText("Painting C, 2024")).toHaveLength(2); // real + clone
+  });
+
+  it("omits the year and comma when year is null", () => {
+    render(<WorkSlider images={images} />);
+    expect(screen.getByText("Painting B")).toBeInTheDocument();
+    expect(screen.queryByText(/Painting B,/)).not.toBeInTheDocument();
   });
 
   it("renders an img element for each image plus two clones", () => {

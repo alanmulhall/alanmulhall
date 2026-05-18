@@ -39,9 +39,13 @@ export async function loader() {
     return { images: [] };
   }
   const data = await res.json();
-  const images: { url: string; title: string }[] = data
+  const images: { url: string; title: string; year: number | null }[] = data
     .filter((img: { url: string }) => Boolean(img.url))
-    .map((img: { url: string; title: string }) => ({ url: img.url, title: img.title ?? "" }));
+    .map((img: { url: string; title: string; year: number | null }) => ({
+      url: img.url,
+      title: img.title ?? "",
+      year: img.year ?? null,
+    }));
   return { images };
 }
 
