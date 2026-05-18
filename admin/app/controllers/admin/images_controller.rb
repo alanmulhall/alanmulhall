@@ -75,6 +75,13 @@ class Admin::ImagesController < Admin::BaseController
 
   def upload_to_cloudinary(file)
     return nil if file.blank?
+
+    image = MiniMagick::Image.open(file.path)
+    if image.width > 2000 || image.height > 2000
+      image.resize "2000x2000>"
+      image.write file.path
+    end
+
     Cloudinary::Uploader.upload(file.path, folder: "mulhall-portfolio")
   rescue Cloudinary::Error => e
     Rails.logger.error("Cloudinary upload failed: #{e.message}")

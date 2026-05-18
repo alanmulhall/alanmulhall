@@ -37,6 +37,9 @@ gem "thruster", require: false
 # Cloudinary for image uploads
 gem "cloudinary"
 
+# Image resizing before upload
+gem "mini_magick"
+
 # CORS for API access from the frontend
 gem "rack-cors"
 
