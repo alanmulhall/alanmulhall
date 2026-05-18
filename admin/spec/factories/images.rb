@@ -6,5 +6,6 @@ FactoryBot.define do
     sequence(:position) { |n| n }
     cloudinary_public_id { "mulhall-portfolio/sample_#{SecureRandom.hex(4)}" }
     cloudinary_url { "https://res.cloudinary.com/demo/image/upload/#{cloudinary_public_id}.jpg" }
+    visible { true }
   end
 end

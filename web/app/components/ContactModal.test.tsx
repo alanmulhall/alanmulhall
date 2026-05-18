@@ -5,6 +5,7 @@ import ContactModal from "./ContactModal";
 const mockFetcher = vi.hoisted(() => ({
   state: "idle" as "idle" | "submitting",
   data: undefined as { success?: boolean; error?: string } | undefined,
+  submit: vi.fn(),
 }));
 
 vi.mock("react-router", async (importOriginal) => ({
@@ -12,6 +13,7 @@ vi.mock("react-router", async (importOriginal) => ({
   useFetcher: () => ({
     state: mockFetcher.state,
     data: mockFetcher.data,
+    submit: mockFetcher.submit,
     Form: ({
       children,
       ...props
@@ -24,6 +26,7 @@ vi.mock("react-router", async (importOriginal) => ({
 beforeEach(() => {
   mockFetcher.state = "idle";
   mockFetcher.data = undefined;
+  mockFetcher.submit.mockClear();
 });
 
 describe("ContactModal", () => {
@@ -89,5 +92,51 @@ describe("ContactModal", () => {
     expect(document.body.style.overflow).toBe("hidden");
     unmount();
     expect(document.body.style.overflow).toBe("");
+  });
+
+  describe("per-field validation", () => {
+    it("shows name required error when name is empty", () => {
+      render(<ContactModal onClose={vi.fn()} />);
+      fireEvent.click(screen.getByRole("button", { name: "Send" }));
+      expect(screen.getByText("Name is required.")).toBeInTheDocument();
+    });
+
+    it("shows email required error when email is empty", () => {
+      render(<ContactModal onClose={vi.fn()} />);
+      fireEvent.change(screen.getByLabelText("Name"), { target: { value: "Alice" } });
+      fireEvent.click(screen.getByRole("button", { name: "Send" }));
+      expect(screen.getByText("Email is required.")).toBeInTheDocument();
+    });
+
+    it("shows invalid email error when email format is wrong", () => {
+      render(<ContactModal onClose={vi.fn()} />);
+      fireEvent.change(screen.getByLabelText("Name"), { target: { value: "Alice" } });
+      fireEvent.change(screen.getByLabelText("Email"), { target: { value: "notanemail" } });
+      fireEvent.click(screen.getByRole("button", { name: "Send" }));
+      expect(screen.getByText("Please enter a valid email.")).toBeInTheDocument();
+    });
+
+    it("shows message required error when message is empty", () => {
+      render(<ContactModal onClose={vi.fn()} />);
+      fireEvent.change(screen.getByLabelText("Name"), { target: { value: "Alice" } });
+      fireEvent.change(screen.getByLabelText("Email"), { target: { value: "alice@example.com" } });
+      fireEvent.click(screen.getByRole("button", { name: "Send" }));
+      expect(screen.getByText("Message is required.")).toBeInTheDocument();
+    });
+
+    it("does not call submit when validation fails", () => {
+      render(<ContactModal onClose={vi.fn()} />);
+      fireEvent.click(screen.getByRole("button", { name: "Send" }));
+      expect(mockFetcher.submit).not.toHaveBeenCalled();
+    });
+
+    it("calls submit when all fields are valid", () => {
+      render(<ContactModal onClose={vi.fn()} />);
+      fireEvent.change(screen.getByLabelText("Name"), { target: { value: "Alice" } });
+      fireEvent.change(screen.getByLabelText("Email"), { target: { value: "alice@example.com" } });
+      fireEvent.change(screen.getByLabelText("Message"), { target: { value: "Hello!" } });
+      fireEvent.click(screen.getByRole("button", { name: "Send" }));
+      expect(mockFetcher.submit).toHaveBeenCalledOnce();
+    });
   });
 });

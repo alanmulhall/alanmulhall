@@ -82,4 +82,44 @@ describe("WorkSlider", () => {
 
     expect(screen.getByLabelText("Go to slide 1")).toHaveAttribute("aria-current", "true");
   });
+
+  describe("lightbox", () => {
+    it("opens when a slide image is clicked", () => {
+      const { container } = render(<WorkSlider images={images} />);
+      // index 1 = first real slide (index 0 is clone of last)
+      const slideImgs = container.querySelectorAll("img");
+      fireEvent.click(slideImgs[1]);
+      expect(screen.getByLabelText("Close")).toBeInTheDocument();
+    });
+
+    it("closes when the Close button is clicked", () => {
+      const { container } = render(<WorkSlider images={images} />);
+      fireEvent.click(container.querySelectorAll("img")[1]);
+      fireEvent.click(screen.getByLabelText("Close"));
+      expect(screen.queryByLabelText("Close")).not.toBeInTheDocument();
+    });
+
+    it("closes when Escape is pressed", () => {
+      const { container } = render(<WorkSlider images={images} />);
+      fireEvent.click(container.querySelectorAll("img")[1]);
+      fireEvent.keyDown(document, { key: "Escape" });
+      expect(screen.queryByLabelText("Close")).not.toBeInTheDocument();
+    });
+
+    it("closes when the overlay is clicked", () => {
+      const { container } = render(<WorkSlider images={images} />);
+      fireEvent.click(container.querySelectorAll("img")[1]);
+      const overlay = container.querySelector(".fixed.inset-0") as Element;
+      fireEvent.click(overlay);
+      expect(screen.queryByLabelText("Close")).not.toBeInTheDocument();
+    });
+
+    it("displays the clicked image src in the lightbox", () => {
+      const { container } = render(<WorkSlider images={images} />);
+      const slideImgs = container.querySelectorAll("img");
+      fireEvent.click(slideImgs[1]); // first real slide = /img/a.jpg
+      // After opening, there should be one extra img (the lightbox one)
+      expect(container.querySelectorAll("img").length).toBe(images.length + 2 + 1);
+    });
+  });
 });

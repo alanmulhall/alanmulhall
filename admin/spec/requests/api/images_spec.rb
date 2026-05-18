@@ -29,4 +29,16 @@ RSpec.describe "GET /api/images", type: :request do
     positions = JSON.parse(response.body).map { |i| i["position"] }
     expect(positions).to eq(positions.sort)
   end
+
+  it "excludes images where visible is false" do
+    create(:image, visible: false)
+    get "/api/images"
+    expect(JSON.parse(response.body).length).to eq(3)
+  end
+
+  it "returns display_url as the url field" do
+    get "/api/images"
+    item = JSON.parse(response.body).first
+    expect(item["url"]).to be_a(String).and include("cloudinary")
+  end
 end

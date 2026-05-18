@@ -81,4 +81,58 @@ RSpec.describe "Admin::Images", type: :request do
       expect(image1.reload.position).to eq(2)
     end
   end
+
+  describe "GET /admin/images/:id/edit" do
+    let!(:image) { create(:image) }
+
+    it "requires authentication" do
+      get "/admin/images/#{image.id}/edit"
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it "returns 200 with valid credentials" do
+      get "/admin/images/#{image.id}/edit", headers: auth_headers
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
+  describe "PATCH /admin/images/:id" do
+    let!(:image) { create(:image) }
+
+    it "requires authentication" do
+      patch "/admin/images/#{image.id}", params: { image: { title: "New Title" } }
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it "updates the image and redirects" do
+      patch "/admin/images/#{image.id}",
+            params: { image: { title: "Updated Title" } },
+            headers: auth_headers
+      expect(response).to redirect_to(admin_images_path)
+      expect(image.reload.title).to eq("Updated Title")
+    end
+
+    it "renders edit with unprocessable_entity on validation failure" do
+      patch "/admin/images/#{image.id}",
+            params: { image: { title: "" } },
+            headers: auth_headers
+      expect(response).to have_http_status(:unprocessable_entity)
+    end
+  end
+
+  describe "PATCH /admin/images/:id/move_down" do
+    let!(:image1) { create(:image, position: 1) }
+    let!(:image2) { create(:image, position: 2) }
+
+    it "swaps positions" do
+      patch "/admin/images/#{image1.id}/move_down", headers: auth_headers
+      expect(image1.reload.position).to eq(2)
+      expect(image2.reload.position).to eq(1)
+    end
+
+    it "does nothing when there is no image below" do
+      patch "/admin/images/#{image2.id}/move_down", headers: auth_headers
+      expect(image2.reload.position).to eq(2)
+    end
+  end
 end
