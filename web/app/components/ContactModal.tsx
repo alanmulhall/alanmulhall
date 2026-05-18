@@ -64,9 +64,9 @@ export default function ContactModal({ onClose }: Props) {
     <div
       ref={overlayRef}
       onClick={handleOverlayClick}
-      className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center px-6"
+      className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center md:px-6"
     >
-      <div className="bg-white w-full max-w-md p-8 relative">
+      <div className="bg-white w-full h-full md:h-auto md:max-w-md p-8 relative">
         <button
           onClick={onClose}
           aria-label="Close"
