@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useFetcher } from "react-router";
 
 interface Props {
@@ -7,11 +7,17 @@ interface Props {
 
 export default function ContactModal({ onClose }: Props) {
   const fetcher = useFetcher();
-  const overlayRef = useRef<HTMLDivElement>(null);
   const isSubmitting = fetcher.state === "submitting";
   const success = fetcher.data?.success;
   const serverError = fetcher.data?.error;
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [visible, setVisible] = useState(false);
+
+  // Trigger slide-in on next frame so the CSS transition fires
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setVisible(true));
+    return () => cancelAnimationFrame(id);
+  }, []);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -29,12 +35,6 @@ export default function ContactModal({ onClose }: Props) {
       document.body.style.overflow = "";
     };
   }, []);
-
-  const handleOverlayClick = (e: React.MouseEvent) => {
-    if (e.target === overlayRef.current) {
-      onClose();
-    }
-  };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -61,94 +61,102 @@ export default function ContactModal({ onClose }: Props) {
   };
 
   return (
-    <div
-      ref={overlayRef}
-      onClick={handleOverlayClick}
-      className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center md:px-6"
-    >
-      <div className="bg-white w-full h-full md:h-auto md:max-w-md p-8 relative">
-        <button
-          onClick={onClose}
-          aria-label="Close"
-          className="absolute top-5 right-5 text-black hover:opacity-50 transition-opacity"
-        >
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
+    <>
+      {/* Desktop overlay — click to close */}
+      <div className="hidden md:block fixed inset-0 bg-black/20 z-40" onClick={onClose} />
+
+      {/* Panel — full screen on mobile, slide-in from right on desktop */}
+      <div
+        className={`fixed z-50 bg-white overflow-y-auto
+          inset-0
+          md:inset-auto md:right-0 md:top-0 md:h-full md:w-[420px]
+          md:transition-transform md:duration-300 md:ease-out
+          ${visible ? "md:translate-x-0" : "md:translate-x-full"}`}
+      >
+        <div className="p-8 relative">
+          <button
+            onClick={onClose}
+            aria-label="Close"
+            className="absolute top-5 right-5 text-black hover:opacity-50 transition-opacity"
           >
-            <line x1="18" y1="6" x2="6" y2="18" />
-            <line x1="6" y1="6" x2="18" y2="18" />
-          </svg>
-        </button>
-
-        <h2 className="font-mono text-2xl font-medium mb-6">Contact</h2>
-
-        {success ? (
-          <p className="font-mono text-sm text-gray-500">Message sent. I'll be in touch soon.</p>
-        ) : (
-          <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
-            <div className="flex flex-col gap-1">
-              <label className="font-mono text-base text-gray-500" htmlFor="name">
-                Name
-              </label>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                className="border border-black/20 px-3 py-2 text-sm font-mono focus:outline-none focus:border-black transition-colors"
-              />
-              {fieldErrors.name && (
-                <p className="font-mono text-sm text-red-500">{fieldErrors.name}</p>
-              )}
-            </div>
-
-            <div className="flex flex-col gap-1">
-              <label className="font-mono text-base text-gray-500" htmlFor="email">
-                Email
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                className="border border-black/20 px-3 py-2 text-sm font-mono focus:outline-none focus:border-black transition-colors"
-              />
-              {fieldErrors.email && (
-                <p className="font-mono text-sm text-red-500">{fieldErrors.email}</p>
-              )}
-            </div>
-
-            <div className="flex flex-col gap-1">
-              <label className="font-mono text-base text-gray-500" htmlFor="message">
-                Message
-              </label>
-              <textarea
-                id="message"
-                name="message"
-                rows={4}
-                className="border border-black/20 px-3 py-2 text-sm font-mono focus:outline-none focus:border-black transition-colors resize-none"
-              />
-              {fieldErrors.message && (
-                <p className="font-mono text-sm text-red-500">{fieldErrors.message}</p>
-              )}
-            </div>
-
-            {serverError && <p className="font-mono text-sm text-red-500">{serverError}</p>}
-
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="font-mono text-base bg-black text-white py-2 hover:opacity-70 transition-opacity mt-2 disabled:opacity-40"
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
             >
-              {isSubmitting ? "Sending…" : "Send"}
-            </button>
-          </form>
-        )}
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+
+          <h2 className="font-mono text-2xl font-medium mb-6">Contact</h2>
+
+          {success ? (
+            <p className="font-mono text-sm text-gray-500">Message sent. I'll be in touch soon.</p>
+          ) : (
+            <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
+              <div className="flex flex-col gap-1">
+                <label className="font-mono text-base text-gray-500" htmlFor="name">
+                  Name
+                </label>
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  className="border border-black/20 px-3 py-2 text-sm font-mono focus:outline-none focus:border-black transition-colors"
+                />
+                {fieldErrors.name && (
+                  <p className="font-mono text-sm text-red-500">{fieldErrors.name}</p>
+                )}
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <label className="font-mono text-base text-gray-500" htmlFor="email">
+                  Email
+                </label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  className="border border-black/20 px-3 py-2 text-sm font-mono focus:outline-none focus:border-black transition-colors"
+                />
+                {fieldErrors.email && (
+                  <p className="font-mono text-sm text-red-500">{fieldErrors.email}</p>
+                )}
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <label className="font-mono text-base text-gray-500" htmlFor="message">
+                  Message
+                </label>
+                <textarea
+                  id="message"
+                  name="message"
+                  rows={4}
+                  className="border border-black/20 px-3 py-2 text-sm font-mono focus:outline-none focus:border-black transition-colors resize-none"
+                />
+                {fieldErrors.message && (
+                  <p className="font-mono text-sm text-red-500">{fieldErrors.message}</p>
+                )}
+              </div>
+
+              {serverError && <p className="font-mono text-sm text-red-500">{serverError}</p>}
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="font-mono text-base bg-black text-white py-2 hover:opacity-70 transition-opacity mt-2 disabled:opacity-40"
+              >
+                {isSubmitting ? "Sending…" : "Send"}
+              </button>
+            </form>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
