@@ -168,7 +168,8 @@ export default function WorkSlider({ images }: Props) {
                     alt=""
                     className="object-contain cursor-zoom-in"
                     style={{
-                      height: slide.title ? "calc(100% - 2rem)" : "100%",
+                      height: "auto",
+                      maxHeight: slide.title ? "calc(100% - 2rem)" : "100%",
                       width: "auto",
                     }}
                     draggable={false}
