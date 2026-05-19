@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Resend } from "resend";
 import type { Route } from "./+types/home";
 import WorkSlider from "../components/WorkSlider";
@@ -52,9 +52,18 @@ export async function loader() {
 export default function Home({ loaderData }: Route.ComponentProps) {
   const { images } = loaderData;
   const [contactOpen, setContactOpen] = useState(false);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setVisible(true));
+    return () => cancelAnimationFrame(id);
+  }, []);
 
   return (
-    <div className="h-screen flex flex-col bg-white text-black overflow-hidden">
+    <div
+      className="h-screen flex flex-col bg-white text-black overflow-hidden transition-opacity duration-500 ease-out"
+      style={{ opacity: visible ? 1 : 0 }}
+    >
       <header className="px-6 md:px-10 py-4 md:pt-8 md:pb-16 flex items-center justify-between flex-shrink-0">
         <div className="flex flex-col gap-1">
           <span className="font-mono text-[1.75rem] font-medium tracking-tight">Alan Mulhall</span>
