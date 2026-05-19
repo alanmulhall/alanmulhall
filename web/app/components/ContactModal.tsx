@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useFetcher } from "react-router";
 
 interface Props {
@@ -19,15 +19,25 @@ export default function ContactModal({ onClose }: Props) {
     return () => cancelAnimationFrame(id);
   }, []);
 
+  // On desktop, slide out then unmount; on mobile, close immediately
+  const handleClose = useCallback(() => {
+    if (window.matchMedia("(min-width: 768px)").matches) {
+      setVisible(false);
+      setTimeout(onClose, 300);
+    } else {
+      onClose();
+    }
+  }, [onClose]);
+
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        onClose();
+        handleClose();
       }
     };
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
-  }, [onClose]);
+  }, [handleClose]);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -63,7 +73,7 @@ export default function ContactModal({ onClose }: Props) {
   return (
     <>
       {/* Desktop overlay — click to close */}
-      <div className="hidden md:block fixed inset-0 bg-black/20 z-40" onClick={onClose} />
+      <div className="hidden md:block fixed inset-0 bg-black/20 z-40" onClick={handleClose} />
 
       {/* Panel — full screen on mobile, slide-in from right on desktop */}
       <div
@@ -75,7 +85,7 @@ export default function ContactModal({ onClose }: Props) {
       >
         <div className="p-8 relative">
           <button
-            onClick={onClose}
+            onClick={handleClose}
             aria-label="Close"
             className="absolute top-5 right-5 text-black hover:opacity-50 transition-opacity"
           >
