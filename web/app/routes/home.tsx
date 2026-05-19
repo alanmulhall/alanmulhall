@@ -61,7 +61,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
 
   return (
     <div
-      className="h-screen flex flex-col bg-white text-black overflow-hidden transition-opacity duration-500 ease-out"
+      className="h-screen flex flex-col bg-white text-black overflow-hidden transition-opacity duration-[3000ms] ease-out"
       style={{ opacity: visible ? 1 : 0 }}
     >
       <header className="px-6 md:px-10 py-4 md:pt-8 md:pb-16 flex items-center justify-between flex-shrink-0">
