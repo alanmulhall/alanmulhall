@@ -29,8 +29,7 @@ export default function WorkSlider({ images }: Props) {
   const touchCurrentX = useRef(0);
   const isHorizontal = useRef<boolean | null>(null);
 
-  // Real slide index for dot indicators (0-based)
-  const realIndex = (((index - 1) % total) + total) % total;
+  // const realIndex = (((index - 1) % total) + total) % total; // used by dot indicators
 
   const prev = () => {
     setTransitionEnabled(true);
