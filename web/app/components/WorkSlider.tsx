@@ -264,7 +264,7 @@ export default function WorkSlider({ images }: Props) {
       )}
 
       {/* Dot indicators */}
-      <div className="flex justify-center gap-3 mt-5">
+      {/* <div className="flex justify-center gap-3 mt-5">
         {images.map((_, i) => (
           <button
             key={i}
@@ -278,7 +278,7 @@ export default function WorkSlider({ images }: Props) {
             className={`w-2 h-2 rounded-full transition-colors ${i === realIndex ? "bg-black" : "bg-black/30"}`}
           />
         ))}
-      </div>
+      </div> */}
     </div>
   );
 }
