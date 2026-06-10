@@ -11,4 +11,8 @@
 | `slider_prev` | — | Fired when the Previous button is clicked |
 | `lightbox_opened` | `slide_position` (int), `slide_title` (string) | Fired when a slide image is clicked to open the lightbox |
 | `instagram_click` | — | Fired when the Instagram link in the header is clicked |
-| `contact_click` | — | Fired when the Contact button in the header is clicked |
+| `contact_modal_opened` | — | Fired when the contact modal is opened |
+| `contact_modal_closed` | — | Fired when the contact modal is closed |
+| `contact_submit_clicked` | — | Fired when the contact form is submitted with valid data |
+| `contact_sent` | — | Fired when the contact form is successfully sent |
+| `contact_failed` | — | Fired when the contact form fails to send |

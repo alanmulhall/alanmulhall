@@ -81,7 +81,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
             <button
               onClick={() => {
                 setContactOpen(true);
-                gtag("event", "contact_click");
+                gtag("event", "contact_modal_opened");
               }}
               className="font-mono text-base text-gray-400 hover:text-black transition-colors text-left underline"
             >

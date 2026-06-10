@@ -27,6 +27,7 @@ beforeEach(() => {
   mockFetcher.state = "idle";
   mockFetcher.data = undefined;
   mockFetcher.submit.mockClear();
+  (globalThis as unknown as Record<string, unknown>).gtag = vi.fn();
 });
 
 describe("ContactModal", () => {
@@ -92,6 +93,47 @@ describe("ContactModal", () => {
     expect(document.body.style.overflow).toBe("hidden");
     unmount();
     expect(document.body.style.overflow).toBe("");
+  });
+
+  describe("analytics", () => {
+    it("fires contact_modal_closed when the close button is clicked", () => {
+      render(<ContactModal onClose={vi.fn()} />);
+      fireEvent.click(screen.getByLabelText("Close"));
+      expect(gtag).toHaveBeenCalledWith("event", "contact_modal_closed");
+    });
+
+    it("fires contact_modal_closed when Escape is pressed", () => {
+      render(<ContactModal onClose={vi.fn()} />);
+      fireEvent.keyDown(document, { key: "Escape" });
+      expect(gtag).toHaveBeenCalledWith("event", "contact_modal_closed");
+    });
+
+    it("fires contact_submit_clicked when the form is submitted with valid data", () => {
+      render(<ContactModal onClose={vi.fn()} />);
+      fireEvent.change(screen.getByLabelText("Name"), { target: { value: "Alice" } });
+      fireEvent.change(screen.getByLabelText("Email"), { target: { value: "alice@example.com" } });
+      fireEvent.change(screen.getByLabelText("Message"), { target: { value: "Hello!" } });
+      fireEvent.click(screen.getByRole("button", { name: "Send" }));
+      expect(gtag).toHaveBeenCalledWith("event", "contact_submit_clicked");
+    });
+
+    it("does not fire contact_submit_clicked when validation fails", () => {
+      render(<ContactModal onClose={vi.fn()} />);
+      fireEvent.click(screen.getByRole("button", { name: "Send" }));
+      expect(gtag).not.toHaveBeenCalledWith("event", "contact_submit_clicked");
+    });
+
+    it("fires contact_sent when the server returns success", () => {
+      mockFetcher.data = { success: true };
+      render(<ContactModal onClose={vi.fn()} />);
+      expect(gtag).toHaveBeenCalledWith("event", "contact_sent");
+    });
+
+    it("fires contact_failed when the server returns an error", () => {
+      mockFetcher.data = { success: false, error: "Failed to send. Please try again." };
+      render(<ContactModal onClose={vi.fn()} />);
+      expect(gtag).toHaveBeenCalledWith("event", "contact_failed");
+    });
   });
 
   describe("per-field validation", () => {

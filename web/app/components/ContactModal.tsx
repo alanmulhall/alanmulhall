@@ -11,6 +11,14 @@ export default function ContactModal({ onClose }: Props) {
   const success = fetcher.data?.success;
   const serverError = fetcher.data?.error;
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (fetcher.data?.success) {
+      gtag("event", "contact_sent");
+    } else if (fetcher.data?.error) {
+      gtag("event", "contact_failed");
+    }
+  }, [fetcher.data]);
   const [visible, setVisible] = useState(false);
 
   // Trigger slide-in on next frame so the CSS transition fires
@@ -21,6 +29,7 @@ export default function ContactModal({ onClose }: Props) {
 
   // On desktop, slide out then unmount; on mobile, close immediately
   const handleClose = useCallback(() => {
+    gtag("event", "contact_modal_closed");
     if (window.matchMedia("(min-width: 768px)").matches) {
       setVisible(false);
       setTimeout(onClose, 300);
@@ -67,6 +76,7 @@ export default function ContactModal({ onClose }: Props) {
       return;
     }
     setFieldErrors({});
+    gtag("event", "contact_submit_clicked");
     fetcher.submit(data, { method: "post" });
   };
 
