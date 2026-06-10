@@ -1,5 +1,7 @@
 import "@testing-library/jest-dom";
 
+(globalThis as unknown as Record<string, unknown>).gtag = () => {};
+
 Object.defineProperty(window, "matchMedia", {
   writable: true,
   value: (query: string) => ({

@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import WorkSlider from "./WorkSlider";
 
 const images = [
@@ -102,6 +102,41 @@ describe("WorkSlider", () => {
     fireEvent.touchEnd(track, { targetTouches: [] });
 
     expect(sliderTrack.style.transform).toBe("translateX(calc(-100% + 0px))");
+  });
+
+  describe("analytics", () => {
+    beforeEach(() => {
+      (globalThis as unknown as Record<string, unknown>).gtag = vi.fn();
+    });
+
+    it("fires slider_next event when Next is clicked", () => {
+      render(<WorkSlider images={images} />);
+      fireEvent.click(screen.getByLabelText("Next"));
+      expect(gtag).toHaveBeenCalledWith("event", "slider_next");
+    });
+
+    it("fires slider_prev event when Previous is clicked", () => {
+      render(<WorkSlider images={images} />);
+      fireEvent.click(screen.getByLabelText("Previous"));
+      expect(gtag).toHaveBeenCalledWith("event", "slider_prev");
+    });
+
+    it("fires slide_viewed with position and title when navigating to a slide", () => {
+      render(<WorkSlider images={images} />);
+      fireEvent.click(screen.getByLabelText("Next"));
+      expect(gtag).toHaveBeenCalledWith("event", "slide_viewed", {
+        slide_position: 2,
+        slide_title: "Painting B",
+      });
+    });
+
+    it("fires slide_viewed for the first slide on initial render", () => {
+      render(<WorkSlider images={images} />);
+      expect(gtag).toHaveBeenCalledWith("event", "slide_viewed", {
+        slide_position: 1,
+        slide_title: "Painting A",
+      });
+    });
   });
 
   describe("lightbox", () => {

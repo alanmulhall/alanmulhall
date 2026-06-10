@@ -29,7 +29,14 @@ export default function WorkSlider({ images }: Props) {
   const touchCurrentX = useRef(0);
   const isHorizontal = useRef<boolean | null>(null);
 
-  // const realIndex = (((index - 1) % total) + total) % total; // used by dot indicators
+  const realIndex = (((index - 1) % total) + total) % total;
+
+  useEffect(() => {
+    gtag("event", "slide_viewed", {
+      slide_position: realIndex + 1,
+      slide_title: images[realIndex].title,
+    });
+  }, [realIndex]);
 
   const prev = () => {
     setTransitionEnabled(true);
@@ -38,6 +45,7 @@ export default function WorkSlider({ images }: Props) {
       indexRef.current = next;
       return next;
     });
+    gtag("event", "slider_prev");
   };
 
   const next = () => {
@@ -47,6 +55,7 @@ export default function WorkSlider({ images }: Props) {
       indexRef.current = next;
       return next;
     });
+    gtag("event", "slider_next");
   };
 
   const onTransitionEnd = () => {
