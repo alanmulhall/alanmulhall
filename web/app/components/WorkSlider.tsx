@@ -184,6 +184,10 @@ export default function WorkSlider({ images }: Props) {
                     onClick={() => {
                       if (Math.abs(dragOffset) < 5) {
                         setLightbox(slide.url);
+                        gtag("event", "lightbox_opened", {
+                          slide_position: realIndex + 1,
+                          slide_title: slide.title,
+                        });
                       }
                     }}
                   />

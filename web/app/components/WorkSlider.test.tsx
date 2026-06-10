@@ -130,6 +130,15 @@ describe("WorkSlider", () => {
       });
     });
 
+    it("fires lightbox_opened with position and title when a slide image is clicked", () => {
+      const { container } = render(<WorkSlider images={images} />);
+      fireEvent.click(container.querySelectorAll("img")[1]); // first real slide = Painting A
+      expect(gtag).toHaveBeenCalledWith("event", "lightbox_opened", {
+        slide_position: 1,
+        slide_title: "Painting A",
+      });
+    });
+
     it("fires slide_viewed for the first slide on initial render", () => {
       render(<WorkSlider images={images} />);
       expect(gtag).toHaveBeenCalledWith("event", "slide_viewed", {
