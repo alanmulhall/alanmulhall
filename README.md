@@ -10,3 +10,5 @@
 | `slider_next` | — | Fired when the Next button is clicked |
 | `slider_prev` | — | Fired when the Previous button is clicked |
 | `lightbox_opened` | `slide_position` (int), `slide_title` (string) | Fired when a slide image is clicked to open the lightbox |
+| `instagram_click` | — | Fired when the Instagram link in the header is clicked |
+| `contact_click` | — | Fired when the Contact button in the header is clicked |

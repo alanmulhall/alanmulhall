@@ -73,12 +73,16 @@ export default function Home({ loaderData }: Route.ComponentProps) {
               target="_blank"
               rel="noopener noreferrer"
               className="font-mono text-base text-gray-400 hover:text-black transition-colors underline"
+              onClick={() => gtag("event", "instagram_click")}
             >
               instagram
             </a>
             <span className="font-mono text-base text-gray-400">|</span>
             <button
-              onClick={() => setContactOpen(true)}
+              onClick={() => {
+                setContactOpen(true);
+                gtag("event", "contact_click");
+              }}
               className="font-mono text-base text-gray-400 hover:text-black transition-colors text-left underline"
             >
               contact
