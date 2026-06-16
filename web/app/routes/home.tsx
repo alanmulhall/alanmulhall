@@ -5,7 +5,10 @@ import WorkSlider from "../components/WorkSlider";
 import ContactModal from "../components/ContactModal";
 
 export function meta(_: Route.MetaArgs) {
-  return [{ title: "Alan Mulhall" }, { name: "description", content: "Alan Mulhall" }];
+  return [
+    { title: "Alan Mulhall | Artist based in Los Angeles" },
+    { name: "description", content: "Alan Mulhall | Artist based in Los Angeles" },
+  ];
 }
 
 export async function action({ request }: Route.ActionArgs) {
