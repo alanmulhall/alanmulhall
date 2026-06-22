@@ -36,7 +36,7 @@ export default function WorkSlider({ images }: Props) {
       slide_position: realIndex + 1,
       slide_title: images[realIndex].title,
     });
-  }, [realIndex]);
+  }, [realIndex, images]);
 
   const prev = () => {
     setTransitionEnabled(true);
@@ -240,6 +240,15 @@ export default function WorkSlider({ images }: Props) {
             <polyline points="9 18 15 12 9 6" />
           </svg>
         </button>
+      </div>
+
+      {/* Mobile position counter — desktop relies on the arrows instead */}
+      <div
+        className="md:hidden font-mono text-gray-400 mt-3"
+        style={{ fontSize: "12px" }}
+        aria-label={`Image ${realIndex + 1} of ${total}`}
+      >
+        {String(realIndex + 1).padStart(String(total).length, "0")} / {total}
       </div>
 
       {/* Lightbox */}

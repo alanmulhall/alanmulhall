@@ -38,6 +38,29 @@ describe("WorkSlider", () => {
     expect(screen.getByLabelText("Go to slide 2")).not.toHaveAttribute("aria-current");
   });
 
+  describe("mobile position counter", () => {
+    it("shows the current position out of the total", () => {
+      render(<WorkSlider images={images} />);
+      expect(screen.getByLabelText("Image 1 of 3")).toHaveTextContent("1 / 3");
+    });
+
+    it("updates as the slide changes", () => {
+      render(<WorkSlider images={images} />);
+      fireEvent.click(screen.getByLabelText("Next"));
+      expect(screen.getByLabelText("Image 2 of 3")).toHaveTextContent("2 / 3");
+    });
+
+    it("zero-pads the position to the width of the total", () => {
+      const many = Array.from({ length: 12 }, (_, i) => ({
+        url: `/img/${i}.jpg`,
+        title: `Work ${i}`,
+        year: null,
+      }));
+      render(<WorkSlider images={many} />);
+      expect(screen.getByLabelText("Image 1 of 12")).toHaveTextContent("01 / 12");
+    });
+  });
+
   it("next button advances to slide 2", () => {
     const { container } = render(<WorkSlider images={images} />);
     const track = container.querySelector(".flex.h-full") as HTMLElement;
