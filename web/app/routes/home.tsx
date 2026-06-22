@@ -3,6 +3,7 @@ import { Resend } from "resend";
 import type { Route } from "./+types/home";
 import WorkSlider from "../components/WorkSlider";
 import ContactModal from "../components/ContactModal";
+import SignupForm from "../components/SignupForm";
 
 export function meta(_: Route.MetaArgs) {
   return [
@@ -13,6 +14,27 @@ export function meta(_: Route.MetaArgs) {
 
 export async function action({ request }: Route.ActionArgs) {
   const formData = await request.formData();
+  const intent = String(formData.get("intent") ?? "");
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
+  if (intent === "newsletter_signup") {
+    const email = String(formData.get("email") ?? "").trim();
+    if (!email) {
+      return { success: false, error: "Email is required." };
+    }
+
+    const { error } = await resend.contacts.create({
+      email,
+      audienceId: process.env.RESEND_AUDIENCE_ID ?? "",
+      unsubscribed: false,
+    });
+
+    if (error) {
+      return { success: false, error: "Something went wrong. Please try again." };
+    }
+    return { success: true };
+  }
+
   const name = String(formData.get("name") ?? "").trim();
   const email = String(formData.get("email") ?? "").trim();
   const message = String(formData.get("message") ?? "").trim();
@@ -21,7 +43,6 @@ export async function action({ request }: Route.ActionArgs) {
     return { success: false, error: "All fields are required." };
   }
 
-  const resend = new Resend(process.env.RESEND_API_KEY);
   const { error } = await resend.emails.send({
     from: "Contact Form <onboarding@resend.dev>",
     to: "alanmulhall@gmail.com",
@@ -95,10 +116,11 @@ export default function Home({ loaderData }: Route.ComponentProps) {
       </header>
       {contactOpen && <ContactModal onClose={() => setContactOpen(false)} />}
       <WorkSlider images={images} />
-      <footer className="px-6 md:px-10 py-6 mt-[62px] flex-shrink-0 flex items-center justify-between">
+      <footer className="px-6 md:px-10 py-6 mt-[62px] flex-shrink-0 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <span className="font-mono text-sm text-gray-400">
           Alan Mulhall | {__GIT_HASH__} | &copy; {new Date().getFullYear()}
         </span>
+        <SignupForm />
         {/* <a
           href="https://www.instagram.com/alanvmulhall/"
           target="_blank"
