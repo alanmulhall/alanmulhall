@@ -15,4 +15,5 @@
 | `contact_modal_closed` | — | Fired when the contact modal is closed |
 | `contact_submit_clicked` | — | Fired when the contact form is submitted with valid data |
 | `contact_sent` | — | Fired when the contact form is successfully sent |
+| `generate_lead` | — | GA4 recommended event; fired when the contact form is successfully sent |
 | `contact_failed` | — | Fired when the contact form fails to send |

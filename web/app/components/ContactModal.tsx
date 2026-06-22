@@ -15,6 +15,7 @@ export default function ContactModal({ onClose }: Props) {
   useEffect(() => {
     if (fetcher.data?.success) {
       gtag("event", "contact_sent");
+      gtag("event", "generate_lead");
     } else if (fetcher.data?.error) {
       gtag("event", "contact_failed");
     }

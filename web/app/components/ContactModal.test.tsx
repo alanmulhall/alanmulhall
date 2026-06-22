@@ -129,6 +129,12 @@ describe("ContactModal", () => {
       expect(gtag).toHaveBeenCalledWith("event", "contact_sent");
     });
 
+    it("fires generate_lead when the server returns success", () => {
+      mockFetcher.data = { success: true };
+      render(<ContactModal onClose={vi.fn()} />);
+      expect(gtag).toHaveBeenCalledWith("event", "generate_lead");
+    });
+
     it("fires contact_failed when the server returns an error", () => {
       mockFetcher.data = { success: false, error: "Failed to send. Please try again." };
       render(<ContactModal onClose={vi.fn()} />);
