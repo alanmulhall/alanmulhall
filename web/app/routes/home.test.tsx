@@ -26,6 +26,7 @@ function actionArgs(fields: Record<string, string>) {
 beforeEach(() => {
   mockSend.mockReset().mockResolvedValue({ error: null });
   mockContactsCreate.mockReset().mockResolvedValue({ error: null });
+  process.env.RESEND_AUDIENCE_ID = "aud_test";
 });
 
 describe("home action — newsletter signup", () => {
@@ -34,7 +35,7 @@ describe("home action — newsletter signup", () => {
       actionArgs({ intent: "newsletter_signup", email: "fan@example.com" })
     );
     expect(mockContactsCreate).toHaveBeenCalledWith(
-      expect.objectContaining({ email: "fan@example.com" })
+      expect.objectContaining({ email: "fan@example.com", audienceId: "aud_test" })
     );
     expect(mockSend).not.toHaveBeenCalled();
     expect(result).toEqual({ success: true });
@@ -44,6 +45,27 @@ describe("home action — newsletter signup", () => {
     const result = await action(actionArgs({ intent: "newsletter_signup", email: "  " }));
     expect(mockContactsCreate).not.toHaveBeenCalled();
     expect(result).toEqual({ success: false, error: "Email is required." });
+  });
+
+  it("rejects an invalid email format without calling Resend", async () => {
+    const result = await action(actionArgs({ intent: "newsletter_signup", email: "not-an-email" }));
+    expect(mockContactsCreate).not.toHaveBeenCalled();
+    expect(result).toEqual({ success: false, error: "Please enter a valid email." });
+  });
+
+  it("returns an error and logs when RESEND_AUDIENCE_ID is not configured", async () => {
+    delete process.env.RESEND_AUDIENCE_ID;
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const result = await action(
+      actionArgs({ intent: "newsletter_signup", email: "fan@example.com" })
+    );
+    expect(mockContactsCreate).not.toHaveBeenCalled();
+    expect(errorSpy).toHaveBeenCalledOnce();
+    expect(result).toEqual({
+      success: false,
+      error: "Something went wrong. Please try again.",
+    });
+    errorSpy.mockRestore();
   });
 
   it("returns an error when Resend fails", async () => {

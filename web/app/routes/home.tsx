@@ -5,6 +5,8 @@ import WorkSlider from "../components/WorkSlider";
 import ContactModal from "../components/ContactModal";
 import SignupForm from "../components/SignupForm";
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export function meta(_: Route.MetaArgs) {
   return [
     { title: "Alan Mulhall | Artist based in Los Angeles" },
@@ -22,10 +24,19 @@ export async function action({ request }: Route.ActionArgs) {
     if (!email) {
       return { success: false, error: "Email is required." };
     }
+    if (!EMAIL_RE.test(email)) {
+      return { success: false, error: "Please enter a valid email." };
+    }
+
+    const audienceId = process.env.RESEND_AUDIENCE_ID;
+    if (!audienceId) {
+      console.error("RESEND_AUDIENCE_ID is not set; cannot record newsletter signup.");
+      return { success: false, error: "Something went wrong. Please try again." };
+    }
 
     const { error } = await resend.contacts.create({
       email,
-      audienceId: process.env.RESEND_AUDIENCE_ID ?? "",
+      audienceId,
       unsubscribed: false,
     });
 
