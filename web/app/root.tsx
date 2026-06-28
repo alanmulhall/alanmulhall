@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import {
   isRouteErrorResponse,
   Links,
@@ -8,6 +9,7 @@ import {
 } from "react-router";
 
 import type { Route } from "./+types/root";
+import { initLogRocket } from "./utils/logrocket";
 import "./app.css";
 
 export const links: Route.LinksFunction = () => [
@@ -49,6 +51,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+  useEffect(() => {
+    initLogRocket(import.meta.env.VITE_LOGROCKET_APP_ID);
+  }, []);
+
   return <Outlet />;
 }
 
