@@ -34,7 +34,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-ET29N9MWZL" />
+        {/* Load the GA collector only in production; the inline gtag stub below
+            always exists so component calls are safe in dev, but without this
+            loader nothing is sent. */}
+        {import.meta.env.PROD && (
+          <script async src="https://www.googletagmanager.com/gtag/js?id=G-ET29N9MWZL" />
+        )}
         <script
           dangerouslySetInnerHTML={{
             __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-ET29N9MWZL');`,
