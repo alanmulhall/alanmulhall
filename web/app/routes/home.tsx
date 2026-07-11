@@ -3,6 +3,7 @@ import { Resend } from "resend";
 import type { Route } from "./+types/home";
 import WorkSlider from "../components/WorkSlider";
 import ContactModal from "../components/ContactModal";
+import type { WorkImage } from "../types";
 
 export function meta(_: Route.MetaArgs) {
   return [
@@ -42,9 +43,9 @@ export async function loader() {
     return { images: [] };
   }
   const data = await res.json();
-  const images: { url: string; title: string; year: number | null }[] = data
-    .filter((img: { url: string }) => Boolean(img.url))
-    .map((img: { url: string; title: string; year: number | null }) => ({
+  const images: WorkImage[] = data
+    .filter((img: { url: string | null }) => Boolean(img.url))
+    .map((img: { url: string; title: string | null; year: number | null }) => ({
       url: img.url,
       title: img.title ?? "",
       year: img.year ?? null,

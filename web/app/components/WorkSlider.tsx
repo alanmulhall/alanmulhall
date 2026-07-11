@@ -1,13 +1,8 @@
 import { useState, useRef, useEffect } from "react";
-
-interface Slide {
-  url: string;
-  title: string;
-  year: number | null;
-}
+import type { WorkImage } from "../types";
 
 interface Props {
-  images: Slide[];
+  images: WorkImage[];
 }
 
 export default function WorkSlider({ images }: Props) {
@@ -15,7 +10,7 @@ export default function WorkSlider({ images }: Props) {
   // [clone of last, ...real slides, clone of first]
   const slides = [images[total - 1], ...images, images[0]];
 
-  const [lightbox, setLightbox] = useState<Slide | null>(null);
+  const [lightbox, setLightbox] = useState<WorkImage | null>(null);
   const [index, setIndex] = useState(1); // 1 = first real slide
   const indexRef = useRef(1); // always current — avoids stale closure in onTransitionEnd
   const [transitionEnabled, setTransitionEnabled] = useState(true);
