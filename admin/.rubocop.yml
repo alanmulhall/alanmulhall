@@ -1,8 +1,22 @@
 # Omakase Ruby styling for Rails
 inherit_gem: { rubocop-rails-omakase: rubocop.yml }
 
-# Overwrite or add rules to create your own house style
-#
-# # Use `[a, [b, c]]` not `[ a, [ b, c ] ]`
-# Layout/SpaceInsideArrayLiteralBrackets:
-#   Enabled: false
+# Maintainability gates (replacing the hosted qlty checks). Omakase disables
+# all Metrics cops; re-enable the complexity ones with sensible thresholds.
+Metrics/CyclomaticComplexity:
+  Enabled: true
+  Max: 10
+
+Metrics/PerceivedComplexity:
+  Enabled: true
+  Max: 10
+
+Metrics/AbcSize:
+  Enabled: true
+  Max: 25
+
+Metrics/MethodLength:
+  Enabled: true
+  Max: 30
+  Exclude:
+    - "db/**/*"

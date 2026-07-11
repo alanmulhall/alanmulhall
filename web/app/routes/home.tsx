@@ -14,6 +14,21 @@ export function meta(_: Route.MetaArgs) {
   ];
 }
 
+// Backstop for clients that bypass the browser-side checks. Returns the
+// user-facing error, or null when the submission is valid.
+function validateContactSubmission(name: string, email: string, message: string): string | null {
+  if (!name || !email || !message) {
+    return "All fields are required.";
+  }
+  if (!EMAIL_RE.test(email)) {
+    return "Please enter a valid email.";
+  }
+  if (name.length > 200 || email.length > 254 || message.length > 5000) {
+    return "Submission is too long.";
+  }
+  return null;
+}
+
 export async function action({ request }: Route.ActionArgs) {
   const formData = await request.formData();
   const name = String(formData.get("name") ?? "").trim();
@@ -27,15 +42,9 @@ export async function action({ request }: Route.ActionArgs) {
     return { success: true };
   }
 
-  if (!name || !email || !message) {
-    return { success: false, error: "All fields are required." };
-  }
-  if (!EMAIL_RE.test(email)) {
-    return { success: false, error: "Please enter a valid email." };
-  }
-  // Backstop for clients that bypass the browser-side checks.
-  if (name.length > 200 || email.length > 254 || message.length > 5000) {
-    return { success: false, error: "Submission is too long." };
+  const validationError = validateContactSubmission(name, email, message);
+  if (validationError) {
+    return { success: false, error: validationError };
   }
 
   const resend = new Resend(process.env.RESEND_API_KEY);
