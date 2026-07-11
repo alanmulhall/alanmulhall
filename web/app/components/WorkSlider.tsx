@@ -18,6 +18,7 @@ export default function WorkSlider({ images }: Props) {
   const [isDragging, setIsDragging] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
+  const lightboxRef = useRef<HTMLDialogElement>(null);
   const touchStartX = useRef(0);
   const touchStartY = useRef(0);
   const touchStartTime = useRef(0);
@@ -68,17 +69,21 @@ export default function WorkSlider({ images }: Props) {
     }
   };
 
+  // Native <dialog> gives the lightbox focus trapping and Escape handling;
+  // focus returns to where it was once the lightbox unmounts.
   useEffect(() => {
     if (!lightbox) {
       return;
     }
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setLightbox(null);
+    const dialog = lightboxRef.current;
+    const opener = document.activeElement;
+    dialog?.showModal();
+    return () => {
+      dialog?.close();
+      if (opener instanceof HTMLElement) {
+        opener.focus();
       }
     };
-    document.addEventListener("keydown", handler);
-    return () => document.removeEventListener("keydown", handler);
   }, [lightbox]);
 
   // Re-enable transition one frame after the silent snap renders
@@ -248,35 +253,45 @@ export default function WorkSlider({ images }: Props) {
 
       {/* Lightbox */}
       {lightbox && (
-        <div
-          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-6"
-          onClick={() => setLightbox(null)}
+        <dialog
+          ref={lightboxRef}
+          aria-label={lightbox.title || "Artwork"}
+          onCancel={() => setLightbox(null)}
+          className="m-0 p-0 w-full h-full max-w-none max-h-none bg-black/90"
         >
-          <button
-            onClick={() => setLightbox(null)}
-            aria-label="Close"
-            className="absolute top-5 right-5 text-white hover:opacity-50 transition-opacity"
+          <div
+            className="w-full h-full p-6 flex items-center justify-center"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) {
+                setLightbox(null);
+              }
+            }}
           >
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
+            <button
+              onClick={() => setLightbox(null)}
+              aria-label="Close"
+              className="absolute top-5 right-5 text-white hover:opacity-50 transition-opacity"
             >
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </button>
-          <img
-            src={lightbox.url}
-            alt={lightbox.title}
-            className="max-h-full max-w-full object-contain"
-            onClick={(e) => e.stopPropagation()}
-          />
-        </div>
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              >
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+            <img
+              src={lightbox.url}
+              alt={lightbox.title}
+              className="max-h-full max-w-full object-contain"
+            />
+          </div>
+        </dialog>
       )}
 
       {/* Dot indicators */}

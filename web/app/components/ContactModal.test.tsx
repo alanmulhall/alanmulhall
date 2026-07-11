@@ -59,6 +59,11 @@ describe("ContactModal", () => {
     expect(screen.getByText("Failed to send. Please try again.")).toBeInTheDocument();
   });
 
+  it("opens as a modal dialog", () => {
+    render(<ContactModal onClose={vi.fn()} />);
+    expect(screen.getByRole("dialog")).toHaveAttribute("open");
+  });
+
   it("calls onClose when the close button is clicked", () => {
     const onClose = vi.fn();
     render(<ContactModal onClose={onClose} />);
@@ -66,18 +71,18 @@ describe("ContactModal", () => {
     expect(onClose).toHaveBeenCalledOnce();
   });
 
-  it("calls onClose when Escape is pressed", () => {
+  it("calls onClose when the dialog is cancelled (Escape)", () => {
     const onClose = vi.fn();
     render(<ContactModal onClose={onClose} />);
-    fireEvent.keyDown(document, { key: "Escape" });
+    fireEvent(screen.getByRole("dialog"), new Event("cancel", { cancelable: true }));
     expect(onClose).toHaveBeenCalledOnce();
   });
 
   it("calls onClose when the backdrop is clicked", () => {
     const onClose = vi.fn();
-    const { container } = render(<ContactModal onClose={onClose} />);
-    const overlay = container.firstChild as HTMLElement;
-    fireEvent.click(overlay, { target: overlay });
+    render(<ContactModal onClose={onClose} />);
+    // ::backdrop clicks hit-test to the dialog element itself
+    fireEvent.click(screen.getByRole("dialog"));
     expect(onClose).toHaveBeenCalledOnce();
   });
 
@@ -102,9 +107,9 @@ describe("ContactModal", () => {
       expect(gtag).toHaveBeenCalledWith("event", "contact_modal_closed");
     });
 
-    it("fires contact_modal_closed when Escape is pressed", () => {
+    it("fires contact_modal_closed when the dialog is cancelled (Escape)", () => {
       render(<ContactModal onClose={vi.fn()} />);
-      fireEvent.keyDown(document, { key: "Escape" });
+      fireEvent(screen.getByRole("dialog"), new Event("cancel", { cancelable: true }));
       expect(gtag).toHaveBeenCalledWith("event", "contact_modal_closed");
     });
 

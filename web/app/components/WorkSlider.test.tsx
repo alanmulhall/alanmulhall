@@ -193,19 +193,26 @@ describe("WorkSlider", () => {
       expect(screen.queryByLabelText("Close")).not.toBeInTheDocument();
     });
 
-    it("closes when Escape is pressed", () => {
+    it("closes when the dialog is cancelled (Escape)", () => {
       const { container } = render(<WorkSlider images={images} />);
       fireEvent.click(container.querySelectorAll("img")[1]);
-      fireEvent.keyDown(document, { key: "Escape" });
+      fireEvent(container.querySelector("dialog") as Element, new Event("cancel"));
       expect(screen.queryByLabelText("Close")).not.toBeInTheDocument();
     });
 
-    it("closes when the overlay is clicked", () => {
+    it("closes when the area around the image is clicked", () => {
       const { container } = render(<WorkSlider images={images} />);
       fireEvent.click(container.querySelectorAll("img")[1]);
-      const overlay = container.querySelector(".fixed.inset-0") as Element;
+      const overlay = container.querySelector("dialog > div") as Element;
       fireEvent.click(overlay);
       expect(screen.queryByLabelText("Close")).not.toBeInTheDocument();
+    });
+
+    it("does not close when the lightbox image itself is clicked", () => {
+      const { container } = render(<WorkSlider images={images} />);
+      fireEvent.click(container.querySelectorAll("img")[1]);
+      fireEvent.click(container.querySelector("dialog img") as Element);
+      expect(screen.getByLabelText("Close")).toBeInTheDocument();
     });
 
     it("displays the clicked image src in the lightbox", () => {
