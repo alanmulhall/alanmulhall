@@ -15,7 +15,7 @@ export default function WorkSlider({ images }: Props) {
   // [clone of last, ...real slides, clone of first]
   const slides = [images[total - 1], ...images, images[0]];
 
-  const [lightbox, setLightbox] = useState<string | null>(null);
+  const [lightbox, setLightbox] = useState<Slide | null>(null);
   const [index, setIndex] = useState(1); // 1 = first real slide
   const indexRef = useRef(1); // always current — avoids stale closure in onTransitionEnd
   const [transitionEnabled, setTransitionEnabled] = useState(true);
@@ -173,7 +173,7 @@ export default function WorkSlider({ images }: Props) {
                 >
                   <img
                     src={slide.url}
-                    alt=""
+                    alt={slide.title}
                     className="object-contain cursor-zoom-in"
                     style={{
                       height: "auto",
@@ -183,7 +183,7 @@ export default function WorkSlider({ images }: Props) {
                     draggable={false}
                     onClick={() => {
                       if (Math.abs(dragOffset) < 5) {
-                        setLightbox(slide.url);
+                        setLightbox(slide);
                         gtag("event", "lightbox_opened", {
                           slide_position: realIndex + 1,
                           slide_title: slide.title,
@@ -276,8 +276,8 @@ export default function WorkSlider({ images }: Props) {
             </svg>
           </button>
           <img
-            src={lightbox}
-            alt=""
+            src={lightbox.url}
+            alt={lightbox.title}
             className="max-h-full max-w-full object-contain"
             onClick={(e) => e.stopPropagation()}
           />

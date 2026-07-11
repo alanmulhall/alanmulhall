@@ -27,6 +27,12 @@ describe("WorkSlider", () => {
     expect(container.querySelectorAll("img")).toHaveLength(images.length + 2);
   });
 
+  it("uses the work title as each image's alt text", () => {
+    render(<WorkSlider images={images} />);
+    expect(screen.getAllByAltText("Painting A")).toHaveLength(2); // real + clone
+    expect(screen.getAllByAltText("Painting B")).toHaveLength(1);
+  });
+
   it.skip("renders one dot per image", () => {
     render(<WorkSlider images={images} />);
     expect(screen.getAllByLabelText(/Go to slide/)).toHaveLength(3);
@@ -208,6 +214,13 @@ describe("WorkSlider", () => {
       fireEvent.click(slideImgs[1]); // first real slide = /img/a.jpg
       // After opening, there should be one extra img (the lightbox one)
       expect(container.querySelectorAll("img").length).toBe(images.length + 2 + 1);
+    });
+
+    it("gives the lightbox image the work title as alt text", () => {
+      const { container } = render(<WorkSlider images={images} />);
+      fireEvent.click(container.querySelectorAll("img")[1]); // first real slide = Painting A
+      // Slide (x2 incl. clone) + lightbox copy
+      expect(screen.getAllByAltText("Painting A")).toHaveLength(3);
     });
   });
 });
