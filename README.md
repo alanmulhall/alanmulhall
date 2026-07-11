@@ -25,7 +25,7 @@ Local values go in `admin/.env` (see `admin/.env.example`).
 | `CLOUDINARY_API_KEY` | Yes | Cloudinary API key. |
 | `CLOUDINARY_API_SECRET` | Yes | Cloudinary API secret. |
 | `ADMIN_USERNAME` | Yes | Username for the admin UI (defaults to `admin`). |
-| `ADMIN_PASSWORD` | Yes | Password for the admin UI. |
+| `ADMIN_PASSWORD` | Yes | Password for the admin UI. In production the app fails closed (admin requests error) if this is unset or blank; the `password` fallback applies only in development/test. |
 | `FRONTEND_ORIGIN` | Yes | URL of the React Router frontend, used for CORS. |
 | `DATABASE_URL` | Auto | Production database connection; provided automatically by the host. |
 | `RAILS_MASTER_KEY` | Yes | Decrypts Rails credentials. Local value in `config/master.key`; in production provided by the host. |

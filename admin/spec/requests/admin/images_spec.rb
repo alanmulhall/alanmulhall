@@ -25,6 +25,25 @@ RSpec.describe "Admin::Images", type: :request do
       get "/admin/images", headers: auth_headers
       expect(response.body).to include(image.title)
     end
+
+    context "in production with ADMIN_PASSWORD unset" do
+      around do |example|
+        original = ENV.delete("ADMIN_PASSWORD")
+        example.run
+      ensure
+        ENV["ADMIN_PASSWORD"] = original if original
+      end
+
+      before do
+        allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new("production"))
+      end
+
+      it "fails closed instead of accepting the development default" do
+        expect {
+          get "/admin/images", headers: auth_headers
+        }.to raise_error(KeyError, /ADMIN_PASSWORD/)
+      end
+    end
   end
 
   describe "GET /admin/images/new" do
