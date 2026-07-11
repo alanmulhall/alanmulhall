@@ -53,6 +53,26 @@ RSpec.describe "Admin::Images", type: :request do
            headers: auth_headers
       expect(response).to redirect_to(admin_images_path)
     end
+
+    it "renders new with a form error when the file is not a valid image" do
+      allow(MiniMagick::Image).to receive(:open).and_raise(MiniMagick::Error, "identify failed")
+      post "/admin/images",
+           params: { image: { title: "West Cork", position: 1,
+                              file: fixture_file_upload("not_an_image.txt", "text/plain") } },
+           headers: auth_headers
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.body).to include("could not be processed")
+      expect(Image.count).to eq(0)
+    end
+
+    it "renders new with a form error when no file is provided" do
+      post "/admin/images",
+           params: { image: { title: "West Cork", position: 1 } },
+           headers: auth_headers
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.body).to include("blank")
+      expect(Image.count).to eq(0)
+    end
   end
 
   describe "DELETE /admin/images/:id" do
@@ -117,6 +137,17 @@ RSpec.describe "Admin::Images", type: :request do
             params: { image: { title: "" } },
             headers: auth_headers
       expect(response).to have_http_status(:unprocessable_entity)
+    end
+
+    it "renders edit with a form error when the replacement file is not a valid image" do
+      allow(MiniMagick::Image).to receive(:open).and_raise(MiniMagick::Error, "identify failed")
+      patch "/admin/images/#{image.id}",
+            params: { image: { title: "Updated Title",
+                               file: fixture_file_upload("not_an_image.txt", "text/plain") } },
+            headers: auth_headers
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.body).to include("could not be processed")
+      expect(image.reload.title).not_to eq("Updated Title")
     end
   end
 

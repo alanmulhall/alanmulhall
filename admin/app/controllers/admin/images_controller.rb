@@ -11,11 +11,18 @@ class Admin::ImagesController < Admin::BaseController
 
   def create
     @image = Image.new(image_params.except(:file))
-    upload = upload_to_cloudinary(params[:image][:file])
+    file = params.dig(:image, :file)
+    upload = upload_to_cloudinary(file)
 
     if upload
       @image.cloudinary_public_id = upload["public_id"]
       @image.cloudinary_url = upload["secure_url"]
+    elsif file.present?
+      @image.errors.add(:file, "could not be processed — please upload a valid image file")
+      return render :new, status: :unprocessable_entity
+    else
+      @image.errors.add(:file, "can't be blank")
+      return render :new, status: :unprocessable_entity
     end
 
     if @image.save
@@ -29,11 +36,16 @@ class Admin::ImagesController < Admin::BaseController
   end
 
   def update
-    upload = upload_to_cloudinary(params[:image][:file]) if params.dig(:image, :file).present?
-
-    if upload
-      @image.cloudinary_public_id = upload["public_id"]
-      @image.cloudinary_url = upload["secure_url"]
+    file = params.dig(:image, :file)
+    if file.present?
+      upload = upload_to_cloudinary(file)
+      if upload
+        @image.cloudinary_public_id = upload["public_id"]
+        @image.cloudinary_url = upload["secure_url"]
+      else
+        @image.errors.add(:file, "could not be processed — please upload a valid image file")
+        return render :edit, status: :unprocessable_entity
+      end
     end
 
     if @image.update(image_params.except(:file))
@@ -83,8 +95,8 @@ class Admin::ImagesController < Admin::BaseController
     end
 
     Cloudinary::Uploader.upload(file.path, folder: "mulhall-portfolio")
-  rescue CloudinaryException => e
-    Rails.logger.error("Cloudinary upload failed: #{e.message}")
+  rescue CloudinaryException, MiniMagick::Error, MiniMagick::Invalid => e
+    Rails.logger.error("Image upload failed: #{e.class}: #{e.message}")
     nil
   end
 
