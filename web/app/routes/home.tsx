@@ -47,19 +47,26 @@ export async function action({ request }: Route.ActionArgs) {
 
 export async function loader() {
   const apiUrl = process.env.RAILS_API_URL ?? "http://localhost:3000";
-  const res = await fetch(`${apiUrl}/api/images`);
-  if (!res.ok) {
+  try {
+    // The gallery blocks first paint, so bound the wait and degrade to an
+    // empty gallery rather than erroring the whole page if the API is down.
+    const res = await fetch(`${apiUrl}/api/images`, { signal: AbortSignal.timeout(5000) });
+    if (!res.ok) {
+      return { images: [] };
+    }
+    const data = await res.json();
+    const images: WorkImage[] = data
+      .filter((img: { url: string | null }) => Boolean(img.url))
+      .map((img: { url: string; title: string | null; year: number | null }) => ({
+        url: img.url,
+        title: img.title ?? "",
+        year: img.year ?? null,
+      }));
+    return { images };
+  } catch (error) {
+    console.error(`Failed to load images from ${apiUrl}:`, error);
     return { images: [] };
   }
-  const data = await res.json();
-  const images: WorkImage[] = data
-    .filter((img: { url: string | null }) => Boolean(img.url))
-    .map((img: { url: string; title: string | null; year: number | null }) => ({
-      url: img.url,
-      title: img.title ?? "",
-      year: img.year ?? null,
-    }));
-  return { images };
 }
 
 export default function Home({ loaderData }: Route.ComponentProps) {

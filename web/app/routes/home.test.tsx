@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { action } from "./home";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { action, loader } from "./home";
 
 const mockSend = vi.hoisted(() => vi.fn());
 
@@ -70,5 +70,46 @@ describe("home action — contact form", () => {
       actionArgs({ name: "Alice", email: "alice@example.com", message: "Hello!" })
     );
     expect(result).toEqual({ success: false, error: "Failed to send. Please try again." });
+  });
+});
+
+describe("home loader", () => {
+  const apiImage = { url: "https://cdn/img.jpg", title: "West Cork", year: 2024 };
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("returns normalized images from the API", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(new Response(JSON.stringify([apiImage, { url: null }])))
+    );
+    const result = await loader();
+    expect(result).toEqual({
+      images: [{ url: "https://cdn/img.jpg", title: "West Cork", year: 2024 }],
+    });
+  });
+
+  it("returns an empty gallery on an HTTP error response", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response("boom", { status: 500 })));
+    const result = await loader();
+    expect(result).toEqual({ images: [] });
+  });
+
+  it("returns an empty gallery and logs when the API is unreachable", async () => {
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new TypeError("fetch failed")));
+    const result = await loader();
+    expect(result).toEqual({ images: [] });
+    expect(errorSpy).toHaveBeenCalledOnce();
+    errorSpy.mockRestore();
+  });
+
+  it("passes an abort signal so a hanging API cannot block rendering", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(new Response("[]"));
+    vi.stubGlobal("fetch", fetchMock);
+    await loader();
+    expect(fetchMock.mock.calls[0][1]?.signal).toBeInstanceOf(AbortSignal);
   });
 });
