@@ -5,6 +5,8 @@ import WorkSlider from "../components/WorkSlider";
 import ContactModal from "../components/ContactModal";
 import type { WorkImage } from "../types";
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export function meta(_: Route.MetaArgs) {
   return [
     { title: "Alan Mulhall | Artist based in Los Angeles" },
@@ -20,6 +22,13 @@ export async function action({ request }: Route.ActionArgs) {
 
   if (!name || !email || !message) {
     return { success: false, error: "All fields are required." };
+  }
+  if (!EMAIL_RE.test(email)) {
+    return { success: false, error: "Please enter a valid email." };
+  }
+  // Backstop for clients that bypass the browser-side checks.
+  if (name.length > 200 || email.length > 254 || message.length > 5000) {
+    return { success: false, error: "Submission is too long." };
   }
 
   const resend = new Resend(process.env.RESEND_API_KEY);
