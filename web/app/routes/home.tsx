@@ -111,7 +111,8 @@ export default function Home({ loaderData }: Route.ComponentProps) {
         </div>
       </header>
       {contactOpen && <ContactModal onClose={() => setContactOpen(false)} />}
-      <WorkSlider images={images} />
+      {/* WorkSlider assumes at least one image (clone slides, position counter) */}
+      {images.length > 0 ? <WorkSlider images={images} /> : <div className="flex-1" />}
       <footer className="px-6 md:px-10 py-6 mt-[62px] flex-shrink-0 flex items-center justify-between">
         <span className="font-mono text-sm text-gray-400">
           Alan Mulhall | {__GIT_HASH__} | &copy; {new Date().getFullYear()}

@@ -1,5 +1,6 @@
+import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { action, loader } from "./home";
+import Home, { action, loader } from "./home";
 
 const mockSend = vi.hoisted(() => vi.fn());
 
@@ -70,6 +71,15 @@ describe("home action — contact form", () => {
       actionArgs({ name: "Alice", email: "alice@example.com", message: "Hello!" })
     );
     expect(result).toEqual({ success: false, error: "Failed to send. Please try again." });
+  });
+});
+
+describe("Home page", () => {
+  it("renders without crashing when the gallery is empty", () => {
+    // WorkSlider assumes at least one image; Home must not mount it with none
+    render(<Home {...({ loaderData: { images: [] } } as unknown as Parameters<typeof Home>[0])} />);
+    expect(screen.getByText("Alan Mulhall")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "contact" })).toBeInTheDocument();
   });
 });
 
