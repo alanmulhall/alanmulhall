@@ -1,6 +1,6 @@
-cd web && npx lint-staged
+(cd web && npx lint-staged) || exit 1
 
 STAGED_RB=$(git diff --cached --name-only --diff-filter=d | grep -E '^admin/.*\.rb$' | sed 's|^admin/||')
 if [ -n "$STAGED_RB" ]; then
-  cd admin && bundle exec rubocop --format github $STAGED_RB
+  (cd admin && bundle exec rubocop --format github $STAGED_RB) || exit 1
 fi
