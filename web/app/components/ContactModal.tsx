@@ -5,6 +5,54 @@ interface Props {
   onClose: () => void;
 }
 
+function validateContactForm(data: FormData): Record<string, string> {
+  const errs: Record<string, string> = {};
+  const email = String(data.get("email") ?? "").trim();
+  if (!String(data.get("name") ?? "").trim()) {
+    errs.name = "Name is required.";
+  }
+  if (!email) {
+    errs.email = "Email is required.";
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errs.email = "Please enter a valid email.";
+  }
+  if (!String(data.get("message") ?? "").trim()) {
+    errs.message = "Message is required.";
+  }
+  return errs;
+}
+
+const inputClasses =
+  "border border-black/20 px-3 py-2 text-sm font-mono focus:outline-none focus:border-black transition-colors";
+
+function Field({
+  id,
+  label,
+  type = "text",
+  multiline = false,
+  error,
+}: {
+  id: string;
+  label: string;
+  type?: string;
+  multiline?: boolean;
+  error?: string;
+}) {
+  return (
+    <div className="flex flex-col gap-1">
+      <label className="font-mono text-base text-gray-500" htmlFor={id}>
+        {label}
+      </label>
+      {multiline ? (
+        <textarea id={id} name={id} rows={4} className={`${inputClasses} resize-none`} />
+      ) : (
+        <input id={id} name={id} type={type} className={inputClasses} />
+      )}
+      {error && <p className="font-mono text-sm text-red-500">{error}</p>}
+    </div>
+  );
+}
+
 export default function ContactModal({ onClose }: Props) {
   const fetcher = useFetcher();
   const isSubmitting = fetcher.state === "submitting";
@@ -64,19 +112,7 @@ export default function ContactModal({ onClose }: Props) {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
-    const errs: Record<string, string> = {};
-    const email = String(data.get("email") ?? "").trim();
-    if (!String(data.get("name") ?? "").trim()) {
-      errs.name = "Name is required.";
-    }
-    if (!email) {
-      errs.email = "Email is required.";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      errs.email = "Please enter a valid email.";
-    }
-    if (!String(data.get("message") ?? "").trim()) {
-      errs.message = "Message is required.";
-    }
+    const errs = validateContactForm(data);
     if (Object.keys(errs).length > 0) {
       setFieldErrors(errs);
       return;
@@ -142,50 +178,9 @@ export default function ContactModal({ onClose }: Props) {
               <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
             </div>
 
-            <div className="flex flex-col gap-1">
-              <label className="font-mono text-base text-gray-500" htmlFor="name">
-                Name
-              </label>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                className="border border-black/20 px-3 py-2 text-sm font-mono focus:outline-none focus:border-black transition-colors"
-              />
-              {fieldErrors.name && (
-                <p className="font-mono text-sm text-red-500">{fieldErrors.name}</p>
-              )}
-            </div>
-
-            <div className="flex flex-col gap-1">
-              <label className="font-mono text-base text-gray-500" htmlFor="email">
-                Email
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                className="border border-black/20 px-3 py-2 text-sm font-mono focus:outline-none focus:border-black transition-colors"
-              />
-              {fieldErrors.email && (
-                <p className="font-mono text-sm text-red-500">{fieldErrors.email}</p>
-              )}
-            </div>
-
-            <div className="flex flex-col gap-1">
-              <label className="font-mono text-base text-gray-500" htmlFor="message">
-                Message
-              </label>
-              <textarea
-                id="message"
-                name="message"
-                rows={4}
-                className="border border-black/20 px-3 py-2 text-sm font-mono focus:outline-none focus:border-black transition-colors resize-none"
-              />
-              {fieldErrors.message && (
-                <p className="font-mono text-sm text-red-500">{fieldErrors.message}</p>
-              )}
-            </div>
+            <Field id="name" label="Name" error={fieldErrors.name} />
+            <Field id="email" label="Email" type="email" error={fieldErrors.email} />
+            <Field id="message" label="Message" multiline error={fieldErrors.message} />
 
             {serverError && <p className="font-mono text-sm text-red-500">{serverError}</p>}
 
