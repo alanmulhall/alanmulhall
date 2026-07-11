@@ -135,6 +135,13 @@ export default function ContactModal({ onClose }: Props) {
           <p className="font-mono text-sm text-gray-500">Message sent. I'll be in touch soon.</p>
         ) : (
           <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
+            {/* Honeypot — hidden from humans; submissions that fill it are
+                dropped by the action */}
+            <div className="hidden" aria-hidden="true">
+              <label htmlFor="website">Website</label>
+              <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
+            </div>
+
             <div className="flex flex-col gap-1">
               <label className="font-mono text-base text-gray-500" htmlFor="name">
                 Name

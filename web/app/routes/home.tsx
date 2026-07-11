@@ -20,6 +20,13 @@ export async function action({ request }: Route.ActionArgs) {
   const email = String(formData.get("email") ?? "").trim();
   const message = String(formData.get("message") ?? "").trim();
 
+  // Honeypot: humans never see the field, so a value means a bot. Report
+  // success without sending so the bot can't tell it was caught.
+  if (String(formData.get("website") ?? "").trim()) {
+    console.warn("Contact form honeypot triggered; dropping submission.");
+    return { success: true };
+  }
+
   if (!name || !email || !message) {
     return { success: false, error: "All fields are required." };
   }

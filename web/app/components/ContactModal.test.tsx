@@ -59,6 +59,23 @@ describe("ContactModal", () => {
     expect(screen.getByText("Failed to send. Please try again.")).toBeInTheDocument();
   });
 
+  it("renders a hidden honeypot field outside the tab order", () => {
+    const { container } = render(<ContactModal onClose={vi.fn()} />);
+    const honeypot = container.querySelector('input[name="website"]') as HTMLInputElement;
+    expect(honeypot).not.toBeNull();
+    expect(honeypot.tabIndex).toBe(-1);
+    expect(honeypot.closest('[aria-hidden="true"]')).toHaveClass("hidden");
+  });
+
+  it("submits without the honeypot blocking a normal submission", () => {
+    render(<ContactModal onClose={vi.fn()} />);
+    fireEvent.change(screen.getByLabelText("Name"), { target: { value: "Alice" } });
+    fireEvent.change(screen.getByLabelText("Email"), { target: { value: "alice@example.com" } });
+    fireEvent.change(screen.getByLabelText("Message"), { target: { value: "Hello!" } });
+    fireEvent.click(screen.getByRole("button", { name: "Send" }));
+    expect(mockFetcher.submit).toHaveBeenCalledOnce();
+  });
+
   it("opens as a modal dialog", () => {
     render(<ContactModal onClose={vi.fn()} />);
     expect(screen.getByRole("dialog")).toHaveAttribute("open");

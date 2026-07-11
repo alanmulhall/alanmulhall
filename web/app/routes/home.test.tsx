@@ -65,6 +65,22 @@ describe("home action — contact form", () => {
     expect(result).toEqual({ success: false, error: "Submission is too long." });
   });
 
+  it("silently drops submissions that fill the honeypot field", async () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const result = await action(
+      actionArgs({
+        name: "Bot",
+        email: "bot@example.com",
+        message: "Buy now!",
+        website: "https://spam.example",
+      })
+    );
+    expect(mockSend).not.toHaveBeenCalled();
+    // Reported as success so the bot cannot tell it was caught
+    expect(result).toEqual({ success: true });
+    warnSpy.mockRestore();
+  });
+
   it("returns an error when Resend fails", async () => {
     mockSend.mockResolvedValue({ error: { message: "boom" } });
     const result = await action(
