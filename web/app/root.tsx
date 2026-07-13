@@ -10,6 +10,7 @@ import {
 
 import type { Route } from "./+types/root";
 import { initLogRocket } from "./utils/logrocket";
+import { artistSchema } from "./seo";
 import "./app.css";
 
 export const links: Route.LinksFunction = () => [
@@ -44,6 +45,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
           dangerouslySetInnerHTML={{
             __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-ET29N9MWZL');`,
           }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(artistSchema) }}
         />
       </head>
       <body>

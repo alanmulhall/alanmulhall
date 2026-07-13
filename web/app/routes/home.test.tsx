@@ -91,11 +91,32 @@ describe("home action — contact form", () => {
 });
 
 describe("Home page", () => {
+  function renderHome(images: { url: string; title: string; year: number | null }[]) {
+    return render(
+      <Home {...({ loaderData: { images } } as unknown as Parameters<typeof Home>[0])} />
+    );
+  }
+
   it("renders without crashing when the gallery is empty", () => {
     // WorkSlider assumes at least one image; Home must not mount it with none
-    render(<Home {...({ loaderData: { images: [] } } as unknown as Parameters<typeof Home>[0])} />);
+    renderHome([]);
     expect(screen.getByText("Alan Mulhall")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "contact" })).toBeInTheDocument();
+  });
+
+  it("embeds VisualArtwork JSON-LD for the gallery", () => {
+    const { container } = renderHome([
+      { url: "https://cdn/one.jpg", title: "West Cork", year: 2024 },
+    ]);
+    const script = container.querySelector('script[type="application/ld+json"]');
+    expect(script).not.toBeNull();
+    const schema = JSON.parse(script!.innerHTML);
+    expect(schema.itemListElement[0].item["@type"]).toBe("VisualArtwork");
+  });
+
+  it("omits the artwork JSON-LD when the gallery is empty", () => {
+    const { container } = renderHome([]);
+    expect(container.querySelector('script[type="application/ld+json"]')).toBeNull();
   });
 });
 

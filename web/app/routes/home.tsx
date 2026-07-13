@@ -3,6 +3,7 @@ import { Resend } from "resend";
 import type { Route } from "./+types/home";
 import WorkSlider from "../components/WorkSlider";
 import ContactModal from "../components/ContactModal";
+import { artworkListSchema } from "../seo";
 import type { WorkImage } from "../types";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -127,6 +128,12 @@ export default function Home({ loaderData }: Route.ComponentProps) {
         </div>
       </header>
       {contactOpen && <ContactModal onClose={() => setContactOpen(false)} />}
+      {images.length > 0 && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(artworkListSchema(images)) }}
+        />
+      )}
       {/* WorkSlider assumes at least one image (clone slides, position counter) */}
       {images.length > 0 ? <WorkSlider images={images} /> : <div className="flex-1" />}
       <footer className="px-6 md:px-10 py-6 mt-[62px] flex-shrink-0 flex items-center justify-between">

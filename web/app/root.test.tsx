@@ -21,6 +21,19 @@ describe("Layout analytics", () => {
     expect(document.querySelector('script[src*="googletagmanager.com"]')).toBeNull();
   });
 
+  it("embeds the artist Person JSON-LD", () => {
+    render(
+      <Layout>
+        <div />
+      </Layout>
+    );
+    const script = document.querySelector('script[type="application/ld+json"]');
+    expect(script).not.toBeNull();
+    const schema = JSON.parse(script!.innerHTML);
+    expect(schema["@type"]).toBe("Person");
+    expect(schema.name).toBe("Alan Mulhall");
+  });
+
   it("still defines the inline gtag stub so component calls are safe", () => {
     render(
       <Layout>
