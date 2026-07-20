@@ -1,1 +1,4 @@
-# See https://www.robotstxt.org/robotstxt.html for documentation on how to use the robots.txt file
+# This host serves the admin panel and API only — nothing here should be
+# crawled or indexed.
+User-agent: *
+Disallow: /
