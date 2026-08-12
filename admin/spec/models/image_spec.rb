@@ -8,6 +8,7 @@ RSpec.describe Image, type: :model do
     it { is_expected.to validate_presence_of(:position) }
     it { is_expected.to validate_presence_of(:cloudinary_public_id) }
     it { is_expected.to validate_numericality_of(:position).only_integer.is_greater_than(0) }
+    it { is_expected.to validate_uniqueness_of(:position) }
     it { is_expected.to validate_inclusion_of(:kind).in_array(Image::KINDS).allow_blank }
     it { is_expected.to validate_numericality_of(:year).only_integer.allow_nil.is_greater_than_or_equal_to(1800).is_less_than_or_equal_to(Date.current.year) }
     it { is_expected.to validate_length_of(:dimensions).is_at_most(60) }

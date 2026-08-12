@@ -104,8 +104,10 @@ class Admin::ImagesController < Admin::BaseController
     other = Image.find_by(position: target_position)
     return unless other
 
+    original_position = image.position
     Image.transaction do
-      other.update_column(:position, image.position)
+      image.update_column(:position, 0)
+      other.update_column(:position, original_position)
       image.update_column(:position, target_position)
     end
   end
