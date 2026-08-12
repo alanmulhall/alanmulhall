@@ -2,7 +2,7 @@ class Admin::ImagesController < Admin::BaseController
   before_action :set_image, only: [ :edit, :update, :destroy, :move_up, :move_down ]
 
   def index
-    @images = Image.all
+    @images = Image.ordered
   end
 
   def new

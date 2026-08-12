@@ -7,7 +7,7 @@ class Image < ApplicationRecord
   validates :kind, inclusion: { in: KINDS }, allow_blank: true
   validates :visible, inclusion: { in: [ true, false ] }
 
-  default_scope { order(:position) }
+  scope :ordered, -> { order(:position) }
 
   def display_url
     return nil unless cloudinary_public_id

@@ -33,12 +33,12 @@ RSpec.describe Image, type: :model do
     end
   end
 
-  describe "default_scope" do
+  describe ".ordered" do
     it "orders records by position ascending" do
       create(:image, position: 3)
       create(:image, position: 1)
       create(:image, position: 2)
-      expect(Image.all.map(&:position)).to eq([ 1, 2, 3 ])
+      expect(Image.ordered.map(&:position)).to eq([ 1, 2, 3 ])
     end
   end
 
