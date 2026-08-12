@@ -5,7 +5,7 @@ class Image < ApplicationRecord
   validates :position, presence: true, numericality: { only_integer: true, greater_than: 0 }, uniqueness: true
   validates :cloudinary_public_id, presence: true
   validates :kind, inclusion: { in: KINDS }, allow_blank: true
-  validates :visible, inclusion: { in: [ true, false ] }
+  validates :visible, exclusion: { in: [ nil ] }
   validates :year, numericality: { only_integer: true, allow_nil: true,
                                    greater_than_or_equal_to: 1800,
                                    less_than_or_equal_to: Date.current.year }
