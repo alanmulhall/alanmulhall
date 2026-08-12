@@ -18,11 +18,11 @@ class Image < ApplicationRecord
   end
 
   def move_to(position)
-    other = self.class.find_by(position: position)
-    return unless other
+    with_lock do
+      other = self.class.where(position: position).lock.first
+      return unless other
 
-    original_position = self.position
-    self.class.transaction do
+      original_position = self.position
       update_column(:position, 0)
       other.update_column(:position, original_position)
       update_column(:position, position)
