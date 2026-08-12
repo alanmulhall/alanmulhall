@@ -6,6 +6,10 @@ class Image < ApplicationRecord
   validates :cloudinary_public_id, presence: true
   validates :kind, inclusion: { in: KINDS }, allow_blank: true
   validates :visible, inclusion: { in: [ true, false ] }
+  validates :year, numericality: { only_integer: true, allow_nil: true,
+                                   greater_than_or_equal_to: 1800,
+                                   less_than_or_equal_to: Date.current.year }
+  validates :dimensions, length: { maximum: 60 }, allow_blank: true
 
   scope :ordered, -> { order(:position) }
 

@@ -9,6 +9,8 @@ RSpec.describe Image, type: :model do
     it { is_expected.to validate_presence_of(:cloudinary_public_id) }
     it { is_expected.to validate_numericality_of(:position).only_integer.is_greater_than(0) }
     it { is_expected.to validate_inclusion_of(:kind).in_array(Image::KINDS).allow_blank }
+    it { is_expected.to validate_numericality_of(:year).only_integer.allow_nil.is_greater_than_or_equal_to(1800).is_less_than_or_equal_to(Date.current.year) }
+    it { is_expected.to validate_length_of(:dimensions).is_at_most(60) }
 
     it "is valid with visible true" do
       subject.visible = true
@@ -24,6 +26,36 @@ RSpec.describe Image, type: :model do
       subject.visible = nil
       expect(subject).not_to be_valid
       expect(subject.errors[:visible]).to be_present
+    end
+
+    it "is valid with a nil year" do
+      subject.year = nil
+      expect(subject).to be_valid
+    end
+
+    it "is invalid with a year before 1800" do
+      subject.year = 1799
+      expect(subject).not_to be_valid
+    end
+
+    it "is invalid with a future year" do
+      subject.year = Date.current.year + 1
+      expect(subject).not_to be_valid
+    end
+
+    it "is invalid with a non-integer year" do
+      subject.year = 2024.5
+      expect(subject).not_to be_valid
+    end
+
+    it "is valid with a blank dimensions" do
+      subject.dimensions = ""
+      expect(subject).to be_valid
+    end
+
+    it "is invalid with dimensions longer than 60 characters" do
+      subject.dimensions = "x" * 61
+      expect(subject).not_to be_valid
     end
   end
 
