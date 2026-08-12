@@ -17,6 +17,9 @@ class Image < ApplicationRecord
     (maximum(:position) || 0) + 1
   end
 
+  # Move this image to a specific position by swapping with the image at that position.
+  # Swap semantics: exchanges positions with the target image (no-op if target position is unoccupied).
+  # Returns early if no image exists at the target position.
   def move_to(position)
     with_lock do
       other = self.class.where(position: position).lock.first
