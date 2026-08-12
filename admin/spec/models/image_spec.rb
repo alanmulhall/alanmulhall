@@ -76,6 +76,33 @@ RSpec.describe Image, type: :model do
     end
   end
 
+  describe ".next_position" do
+    it "returns 1 when there are no images" do
+      expect(Image.next_position).to eq(1)
+    end
+
+    it "returns the highest position plus one" do
+      create(:image, position: 5)
+      expect(Image.next_position).to eq(6)
+    end
+  end
+
+  describe "#move_to" do
+    it "swaps positions with the image at the target position" do
+      image1 = create(:image, position: 1)
+      image2 = create(:image, position: 2)
+      image2.move_to(1)
+      expect(image1.reload.position).to eq(2)
+      expect(image2.reload.position).to eq(1)
+    end
+
+    it "does nothing when no image occupies the target position" do
+      image = create(:image, position: 2)
+      image.move_to(1)
+      expect(image.reload.position).to eq(2)
+    end
+  end
+
   describe "#display_url" do
     it "returns nil when cloudinary_public_id is absent" do
       subject.cloudinary_public_id = nil

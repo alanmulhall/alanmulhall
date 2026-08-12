@@ -6,7 +6,7 @@ class Admin::ImagesController < Admin::BaseController
   end
 
   def new
-    @image = Image.new(position: next_position)
+    @image = Image.new(position: Image.next_position)
   end
 
   def create
@@ -62,12 +62,12 @@ class Admin::ImagesController < Admin::BaseController
   end
 
   def move_up
-    swap_positions(@image, @image.position - 1)
+    @image.move_to(@image.position - 1)
     redirect_to admin_images_path
   end
 
   def move_down
-    swap_positions(@image, @image.position + 1)
+    @image.move_to(@image.position + 1)
     redirect_to admin_images_path
   end
 
@@ -79,10 +79,6 @@ class Admin::ImagesController < Admin::BaseController
 
   def image_params
     params.require(:image).permit(:title, :kind, :medium, :dimensions, :year, :position, :visible, :file)
-  end
-
-  def next_position
-    (Image.maximum(:position) || 0) + 1
   end
 
   def upload_to_cloudinary(file)
@@ -98,17 +94,5 @@ class Admin::ImagesController < Admin::BaseController
   rescue CloudinaryException, MiniMagick::Error, MiniMagick::Invalid => e
     Rails.logger.error("Image upload failed: #{e.class}: #{e.message}")
     nil
-  end
-
-  def swap_positions(image, target_position)
-    other = Image.find_by(position: target_position)
-    return unless other
-
-    original_position = image.position
-    Image.transaction do
-      image.update_column(:position, 0)
-      other.update_column(:position, original_position)
-      image.update_column(:position, target_position)
-    end
   end
 end

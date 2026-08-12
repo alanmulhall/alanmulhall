@@ -13,6 +13,22 @@ class Image < ApplicationRecord
 
   scope :ordered, -> { order(:position) }
 
+  def self.next_position
+    (maximum(:position) || 0) + 1
+  end
+
+  def move_to(position)
+    other = self.class.find_by(position: position)
+    return unless other
+
+    original_position = self.position
+    self.class.transaction do
+      update_column(:position, 0)
+      other.update_column(:position, original_position)
+      update_column(:position, position)
+    end
+  end
+
   def display_url
     return nil unless cloudinary_public_id
     Cloudinary::Utils.cloudinary_url(cloudinary_public_id,
