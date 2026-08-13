@@ -12,3 +12,7 @@ change, not just what happened.
 
 - Project scaffolding (AGENTS.md, changelog, decision record) — establish conventions
   before implementation so every future change is tracked with rationale.
+- Backlog and implementation plan — record upcoming work and the agreed milestone
+  breakdown (stack, design parity with `web/`, API base URL) so implementation can
+  proceed without re-deriving decisions. Why: the plan documents the choices made
+  with the maintainer, including how the app reaches the deployed Rails API.
