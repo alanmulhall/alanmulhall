@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -28,6 +30,22 @@ android {
             isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
+    }
+
+    // Unit tests are variant-agnostic and the Compose UI tests (Robolectric)
+    // need the ui-test-manifest activity, which is only merged into the debug
+    // manifest. Disable the redundant release unit tests so `./gradlew test`
+    // stays green (AGP 8 creates test<Variant>UnitTest for every build type).
+    tasks.matching { it.name == "testReleaseUnitTest" }.configureEach {
+        enabled = false
+    }
+
+    testOptions {
+        // android.util.Log and other android stubs return defaults on the JVM,
+        // so code paths that log-and-degrade (like the error state) stay testable.
+        unitTests.isReturnDefaultValues = true
+        // Robolectric runs the Compose UI tests against the merged manifest.
+        unitTests.isIncludeAndroidResources = true
     }
 
     compileOptions {
@@ -62,12 +80,22 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.material.icons.core)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.okhttp)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
 
     debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
 
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.mockwebserver3)
+    testImplementation(platform(libs.androidx.compose.bom))
+    testImplementation(libs.androidx.ui.test.junit4)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.coil.test)
 }

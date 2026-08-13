@@ -74,3 +74,49 @@ activity-compose 1.10.1, lifecycle 2.9.1). `android.builtInKotlin` is untouched
   drop the `kotlin-android` plugin, move `kotlin {}` config) with the whole
   androidx stack available to adopt at once.
 - `compileSdk 36` is the ceiling until we move to AGP 9 (AGP 8.13 max is 36).
+
+## 003 — Compose UI tests run on the JVM via Robolectric (no instrumented tests)
+
+- **Date:** 2026-08-13
+- **Status:** Accepted
+
+### Context
+
+The Compose UI tests (screens, gestures, dialog behaviour) were first written as
+instrumented tests. The only installed system image is API 37 (Android 17), and
+Compose's UI-test framework on the AGP-8-compatible stack (1.8.x) cannot run
+there — it fails every test with `NoSuchMethodException:
+android.hardware.input.InputManager.getInstance` (the method was removed in
+API 36+). Fixing this needs either a second (older) system image download, or
+moving the tests to the JVM. CI also has no emulator in scope, so instrumented
+tests would never run automatically.
+
+### Decision
+
+Run the Compose UI tests as regular JVM unit tests under Robolectric
+(`@RunWith(RobolectricTestRunner::class)` with `@Config(sdk = [35])` and
+`@GraphicsMode(NATIVE)`). Robolectric 4.16.1 is added as a test dependency and
+`unitTests.isIncludeAndroidResources = true` lets `createComposeRule` resolve the
+test activity from the merged debug manifest.
+
+### Alternatives considered
+
+- **Instrumented tests on a downloaded API 35/34 system image:** closer to a real
+  device, but a ~1.5 GB per-developer download, no CI runner, and the same
+  `InputManager` class of problem will resurface on every future major system
+  image.
+- **Unit-testing only ViewModels, skipping screen tests:** loses the user-visible
+  behaviour coverage that the repo's testing convention requires.
+
+### Consequences
+
+- `./gradlew test` runs 23 JVM tests including all Compose screen tests — fast
+  and CI-friendly (no emulator needed).
+- Robolectric's LEGACY graphics mode gives false-negative `assertIsDisplayed`
+  results for some nodes, so screen tests use `@GraphicsMode(NATIVE)`.
+- AGP 8 creates `test<Variant>UnitTest` for every build type, and the release
+  variant lacks the ui-test-manifest test activity (it is `debugImplementation`).
+  Release unit tests are redundant here, so `testReleaseUnitTest` is disabled.
+  AGP 9 fixes this by honouring `testBuildType` and only creating one test task.
+- Image loading in tests uses Coil's `FakeImageLoaderEngine` set via
+  `SingletonImageLoader.setUnsafe` (Coil 3 API).

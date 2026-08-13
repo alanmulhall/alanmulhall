@@ -28,3 +28,20 @@ change, not just what happened.
   `-Pportfolio.apiBaseUrl`). Why: implements DECISIONS 001; the model mirrors the
   API contract exactly (`title`/`medium` null -> `""`) and the repository hides the
   transport so ViewModels depend only on the interface.
+- Gallery screen: `GalleryViewModel` (Loading/Success/Empty/Error state, viewer
+  selection) and `GalleryScreen` — header, footer, full-height pager slider with
+  swipe navigation, mobile position counter (`01 / 15` style, matching `web/`),
+  tablet side arrows (>= 840dp), caption under each work, and empty/error states
+  with retry. Why: milestone 3; parity with `web/app/components/WorkSlider.tsx`.
+- Viewer screen: `ViewerScreen` overlay with black backdrop, tap-anywhere/close
+  button to dismiss, system back handling, and pinch-zoom clamped to 5x.
+  Why: milestone 3; parity with `web/app/components/Lightbox.tsx` plus the agreed
+  pinch-zoom addition. `web/`'s lightbox has no zoom, so this is a deliberate,
+  documented divergence.
+- Compose UI tests run as JVM tests via Robolectric instead of on-device
+  instrumented tests. Why: DECISIONS 003 — the only installed system image is
+  API 37 and Compose 1.8's test framework cannot run there
+  (`InputManager.getInstance` removed); Robolectric keeps screen tests fast and
+  CI-friendly. `testReleaseUnitTest` is disabled because AGP 8 creates unit-test
+  tasks for every build type but the release manifest lacks the ui-test-manifest
+  activity.
