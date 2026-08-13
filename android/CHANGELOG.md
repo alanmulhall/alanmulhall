@@ -45,3 +45,9 @@ change, not just what happened.
   CI-friendly. `testReleaseUnitTest` is disabled because AGP 8 creates unit-test
   tasks for every build type but the release manifest lacks the ui-test-manifest
   activity.
+- Safe-area handling: the gallery root uses `safeDrawingPadding()` so the header,
+  counter and footer clear the status bar and camera cutout, and the viewer's
+  close button uses `statusBarsPadding()`. Why: with edge-to-edge (enforced on
+  Android 15+), the "Alan Mulhall" header was drawn underneath the punch-hole
+  camera on the Pixel 10 Pro emulator; the padding keeps the design clear of
+  notches and system bars.
