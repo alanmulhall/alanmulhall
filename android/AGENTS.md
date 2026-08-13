@@ -71,7 +71,7 @@ Always write tests for new features, committed in the same commit as the feature
 
 - Every change lands in `CHANGELOG.md` (Keep a Changelog format) under the
   "Unreleased" heading, with a one-line "Why" on each entry.
-- Architectural decisions get a full rationale entry in `docs/DECISIONS.md`
+- Architectural decisions get a full rationale entry in `DECISIONS.md`
   (decision, context, alternatives considered, consequences) — commit it in the
   same commit as the code it documents.
 - Both files are updated in the same commit as the change; never in a follow-up.

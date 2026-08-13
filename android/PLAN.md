@@ -56,7 +56,7 @@ android/
                     OkHttpImagesRepository, JsonConfig
   app/src/test/java/...   Repository (MockWebServer) + ViewModel (coroutines-test) tests
   app/src/androidTest/... Compose UI tests (gallery renders, empty state)
-  CHANGELOG.md, BACKLOG.md, docs/DECISIONS.md, PLAN.md
+  CHANGELOG.md, BACKLOG.md, DECISIONS.md, PLAN.md
 ```
 
 - Screens are stateless composables; state lives in `GalleryViewModel`; data flows
@@ -87,7 +87,7 @@ android/
 | 4 | Responsive + polish | M | Tablet breakpoint, back handling, retry UX, lint/quality pass |
 | 5 | CI (optional) | S | GitHub Actions: lint + unit tests + `assembleDebug` on push |
 
-Each milestone updates `CHANGELOG.md` and `docs/DECISIONS.md` in the same commit
+Each milestone updates `CHANGELOG.md` and `DECISIONS.md` in the same commit
 (see `android/AGENTS.md`).
 
 ## Out of scope for v1 (backlog)
