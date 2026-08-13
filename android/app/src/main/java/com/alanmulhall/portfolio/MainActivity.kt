@@ -6,7 +6,10 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Modifier
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
@@ -39,16 +42,18 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
-                viewerImage?.let { image ->
-                    ViewerScreen(image = image, onDismiss = viewModel::dismissViewer)
-                }
+                Box(modifier = Modifier.fillMaxSize()) {
+                    GalleryScreen(
+                        state = state,
+                        onRetry = viewModel::refresh,
+                        onContact = onContact,
+                        onImageClick = viewModel::openViewer,
+                    )
 
-                GalleryScreen(
-                    state = state,
-                    onRetry = viewModel::refresh,
-                    onContact = onContact,
-                    onImageClick = viewModel::openViewer,
-                )
+                    viewerImage?.let { image ->
+                        ViewerScreen(image = image, onDismiss = viewModel::dismissViewer)
+                    }
+                }
             }
         }
     }

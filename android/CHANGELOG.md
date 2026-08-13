@@ -8,6 +8,14 @@ change, not just what happened.
 
 ## [Unreleased]
 
+### Fixed
+
+- Lightbox overlay now renders above the gallery: `MainActivity` emits `GalleryScreen`
+  first and `ViewerScreen` last inside a full-screen `Box`. Why: Compose draws later
+  siblings on top, so the previous order (viewer emitted before the gallery) composed
+  the lightbox underneath the gallery's opaque `Paper` background — tapping an image
+  set the viewer state but the overlay was never visible on screen.
+
 ### Added
 
 - Project scaffolding (AGENTS.md, changelog, decision record) — establish conventions
