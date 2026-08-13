@@ -16,3 +16,9 @@ change, not just what happened.
   breakdown (stack, design parity with `web/`, API base URL) so implementation can
   proceed without re-deriving decisions. Why: the plan documents the choices made
   with the maintainer, including how the app reaches the deployed Rails API.
+- Gradle project scaffold: version catalog (`libs.versions.toml`), AGP 8.13.2 +
+  Gradle wrapper 8.14.5, JetBrains Mono bundled in `res/font/`, Material 3 theme
+  matching the web palette, adaptive launcher icon, and a `BuildConfigTest` guarding
+  the app id/version wiring. Why: a verified base (build + unit test + lint green,
+  APK smoke-tested on the Pixel 10 Pro emulator) before feature work; see
+  DECISIONS 002 for the toolchain rationale.

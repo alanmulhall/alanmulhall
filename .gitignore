@@ -27,3 +27,12 @@ admin/vendor/bundle/
 admin/.env*
 admin/config/*.key
 admin/config/master.key
+
+# ── android/ (Gradle / Kotlin) ──────────────────────────────────────────────
+android/.gradle/
+android/.kotlin/
+android/local.properties
+android/captures/
+android/**/build/
+*.apk
+*.aab

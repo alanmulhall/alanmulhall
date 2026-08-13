@@ -39,8 +39,10 @@ frontend's design and behavior, consuming the same Rails JSON API from `admin/`
   swappable). Coil for image loading/caching.
 - lifecycle-viewmodel-compose; no navigation library — the viewer is a state-driven
   overlay handled with `BackHandler`.
-- Gradle wrapper 8.14 / AGP 8.11 (JDK 24 compatible — verify at scaffold time), version
-  catalog in `gradle/libs.versions.toml`.
+- Gradle wrapper 8.14.5 / AGP 8.13.2 / Kotlin 2.3.21 on JDK 24 (verified at scaffold;
+  see DECISIONS 002 for the AGP 8 vs 9 reasoning), version catalog in
+  `gradle/libs.versions.toml`. androidx stack pinned to AGP-8-compatible versions
+  (Compose BOM 2025.06.01).
 
 ## Architecture (MVVM)
 
