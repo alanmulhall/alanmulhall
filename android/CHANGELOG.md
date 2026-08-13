@@ -22,3 +22,9 @@ change, not just what happened.
   the app id/version wiring. Why: a verified base (build + unit test + lint green,
   APK smoke-tested on the Pixel 10 Pro emulator) before feature work; see
   DECISIONS 002 for the toolchain rationale.
+- Data layer: `WorkImage` model + `WorkImageDto` mapper, `ImagesRepository` with an
+  OkHttp implementation hitting `GET /api/images`, shared `ApiJson` codec, and
+  `API_BASE_URL` BuildConfig (defaults to the deployed Railway API, overridable via
+  `-Pportfolio.apiBaseUrl`). Why: implements DECISIONS 001; the model mirrors the
+  API contract exactly (`title`/`medium` null -> `""`) and the repository hides the
+  transport so ViewModels depend only on the interface.
