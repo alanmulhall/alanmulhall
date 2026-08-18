@@ -21,3 +21,9 @@ what you see with precision.
   a camera cutout), call out the exact pixel region of the problem.
 - Be concrete and factual. Do not speculate about content you cannot see.
 - Keep the final report concise and organized under short headings.
+- Always conclude with an overall UI quality grade using this scale:
+  - **A** — Excellent. Polished, consistent, no visual issues.
+  - **B** — Good. Minor spacing/contrast nitpicks, no functional visual bugs.
+  - **C** — Fair. Noticeable layout or alignment problems that affect the experience.
+  - **D** — Poor. Multiple significant visual bugs, broken layouts, or accessibility failures.
+  - **F** — Failing. The UI is fundamentally broken or unusable.
