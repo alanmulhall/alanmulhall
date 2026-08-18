@@ -2,10 +2,15 @@
 
 ## Repo structure
 
-Monorepo with two apps:
+Monorepo with three apps:
 
 - `web/` — React Router v7 (SSR) portfolio frontend, deployed to Vercel
 - `admin/` — Rails 8 admin panel + JSON API, deployed to Railway
+- `android/` — Jetpack Compose portfolio app (Kotlin), consumes the same Rails API
+
+Each sub-app has its own `AGENTS.md` with app-specific conventions. The root
+`AGENTS.md` (this file) covers shared cross-app rules; defer to the sub-app file
+for anything specific to that platform.
 
 ## Testing
 
@@ -14,6 +19,7 @@ Tests must be committed in the same commit as the feature — never in a separat
 
 - **Web (React Router):** Vitest + React Testing Library in `web/app/`
 - **Admin (Rails):** RSpec + FactoryBot in `admin/spec/`
+- **Android:** JUnit + Compose UI tests (Robolectric, JVM — no emulator required); run `./gradlew test`
 
 ## Code quality
 
@@ -23,7 +29,10 @@ If a function exceeds these thresholds, extract helpers — do not raise the lim
 **Admin:** RuboCop with Metrics cops enabled (`CyclomaticComplexity` ≤ 10, `AbcSize` ≤ 25,
 `MethodLength` ≤ 30). The base config is `rubocop-rails-omakase`.
 
-Both linters run in the pre-commit hook and in CI — fix violations before committing.
+**Android:** `./gradlew lint` must pass before committing. Keep composables small;
+extract helpers when a screen function gets long.
+
+Web and admin linters run in the pre-commit hook and in CI — fix violations before committing.
 
 ## Architecture principles
 
@@ -49,12 +58,28 @@ Both linters run in the pre-commit hook and in CI — fix violations before comm
 - **`console.error`/`warn` for silent failures.** When the app degrades gracefully (API down,
   upload failure, honeypot trigger), always log so the cause is visible in Vercel/Railway logs.
 
+## API contract (shared)
+
+All three apps ultimately depend on `GET /api/images` served by the admin Rails app.
+Treat the admin controller as the source of truth — any change to the response shape
+must be coordinated across web, android, and admin at the same time.
+
+```json
+{ "id": 1, "title": "West Cork", "medium": "Oil on canvas", "year": 2024,
+  "position": 1, "url": "https://res.cloudinary.com/..." }
+```
+
+`title` and `year` may be null — normalize at the fetch site in each client
+(`title ?? ""` in both the web loader and the Android repository layer).
+
 ## Deployment
 
 - **Web → Vercel.** `VITE_*` env vars are build-time (require a redeploy to change).
   `process.env.*` vars in loader/action code are runtime. See `README.md` for the full list.
 - **Admin → Railway.** `RAILS_MASTER_KEY` is required. `ADMIN_PASSWORD` must be set in
   production — the app fails closed (raises) if it is unset or blank.
+- **Android:** APK built with `./gradlew assembleDebug` (or `assembleRelease` with a
+  signing config). No CI deployment configured yet.
 
 ## Structured data
 
