@@ -2,6 +2,7 @@
 
 | Item | Details | Platform | Priority | Effort |
 |---|---|---|---|---|
+| Add API versioning | Move the public API under a versioned namespace (`/v1/images`) so breaking changes can be introduced later without coordinating all three clients (web, admin, android) simultaneously. Keep the existing `/api/images` as an alias during transition. Requires changes in `admin/config/routes.rb` and update of the base URL in both clients. | Admin \| Web \| Android | High | Medium |
 | Set `RESEND_AUDIENCE_ID` in Vercel | Create an audience in the Resend dashboard and add its ID as an env var. The signup action fails closed without it, so this must be in place before the newsletter feature ships. | Web | High | Small |
 | Resolve Vercel config drift | `web/vercel.json` declares a `@vercel/static-build` while the app is `ssr: true` with a working server action, and `@vercel/react-router` is installed but unused in `react-router.config.ts`. Confirm which config the deployment actually honors and delete the misleading one. | Web | Medium | Small |
 | Rebase `newsletter-signup` onto main | The branch predates the shared `EMAIL_RE`, contact validation, loader error handling, honeypot, and `WorkImage` changes — `web/app/routes/home.tsx` and `home.test.tsx` will conflict. | Web | Medium | Medium |
