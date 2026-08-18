@@ -18,6 +18,16 @@ change, not just what happened.
 
 ### Added
 
+- Test coverage gaps filled: `clampOffset` made `internal` and covered with five
+  pure-arithmetic unit tests; `GalleryScreenTest` extended with loading-spinner,
+  error-message, no-caption, and tablet-layout assertions; `ViewerScreenTest` extended
+  with blank-title content-description fallback test. Why: audit revealed several
+  untested branches — the tablet layout path, the no-caption guard, and the pinch-zoom
+  clamp function were completely dark.
+- `testTag("loading_indicator")` on `CircularProgressIndicator` and
+  `testTag("slide_caption")` on the caption `Text` in `GalleryScreen`. Why: allows
+  test assertions to target specific composables without fragile text matching.
+
 - `testLogging` so `./gradlew test` prints each test name and its result
   (`passed`/`skipped`/`failed`) as it runs. Why: previously the console showed only
   the task line, making it hard to see which tests actually executed.

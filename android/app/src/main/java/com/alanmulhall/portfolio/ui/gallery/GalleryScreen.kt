@@ -29,6 +29,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -209,6 +210,7 @@ private fun Slide(image: WorkImage, onImageClick: (WorkImage) -> Unit) {
                 text = captionFor(image),
                 style = MaterialTheme.typography.labelSmall,
                 color = Muted,
+                modifier = Modifier.testTag("slide_caption"),
             )
         }
     }
@@ -252,7 +254,9 @@ private fun CenteredView(content: @Composable () -> Unit) {
 @Composable
 private fun LoadingIndicator() {
     CircularProgressIndicator(
-        modifier = Modifier.size(24.dp),
+        modifier = Modifier
+            .size(24.dp)
+            .testTag("loading_indicator"),
         color = Muted,
         strokeWidth = 2.dp,
     )

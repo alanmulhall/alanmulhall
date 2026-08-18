@@ -93,7 +93,7 @@ private fun ZoomableImage(image: WorkImage) {
     )
 }
 
-private fun clampOffset(offset: Offset, scale: Float, viewport: IntSize): Offset {
+internal fun clampOffset(offset: Offset, scale: Float, viewport: IntSize): Offset {
     val maxX = ((scale - 1f) * viewport.width / 2f).coerceAtLeast(0f)
     val maxY = ((scale - 1f) * viewport.height / 2f).coerceAtLeast(0f)
     return Offset(
