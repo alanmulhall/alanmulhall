@@ -87,7 +87,8 @@ android/
 | 2 | Data layer | M | `WorkImage`/DTO/mapper, `ImagesRepository` + OkHttp impl, base URL config; MockWebServer + mapper tests |
 | 3 | Gallery + viewer | L | Slider (header/footer/counter/arrows), viewer lightbox with pinch-zoom, Loading/Success/Empty/Error states; ViewModel + Compose tests |
 | 4 | Responsive + polish | M | Tablet breakpoint, back handling, retry UX, lint/quality pass |
-| 5 | CI (optional) | S | GitHub Actions: lint + unit tests + `assembleDebug` on push |
+| 5 | Multi-device screenshots | S | `scripts/capture-screenshots.sh`, AVDs for 3 profiles (small_phone, medium_phone, medium_tablet), batch vision agent review |
+| 6 | CI (optional) | S | GitHub Actions: lint + unit tests + `assembleDebug` on push |
 
 Each milestone updates `CHANGELOG.md` and `DECISIONS.md` in the same commit
 (see `android/AGENTS.md`).
