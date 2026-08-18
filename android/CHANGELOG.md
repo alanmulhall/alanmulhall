@@ -18,6 +18,9 @@ change, not just what happened.
 
 ### Added
 
+- `testLogging` so `./gradlew test` prints each test name and its result
+  (`passed`/`skipped`/`failed`) as it runs. Why: previously the console showed only
+  the task line, making it hard to see which tests actually executed.
 - Project scaffolding (AGENTS.md, changelog, decision record) — establish conventions
   before implementation so every future change is tracked with rationale.
 - Backlog and implementation plan — record upcoming work and the agreed milestone

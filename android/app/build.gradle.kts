@@ -1,3 +1,4 @@
+import org.gradle.api.tasks.testing.Test
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -38,6 +39,12 @@ android {
     // stays green (AGP 8 creates test<Variant>UnitTest for every build type).
     tasks.matching { it.name == "testReleaseUnitTest" }.configureEach {
         enabled = false
+    }
+
+    tasks.withType<Test>().configureEach {
+        testLogging {
+            events("passed", "skipped", "failed")
+        }
     }
 
     testOptions {
