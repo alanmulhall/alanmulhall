@@ -79,6 +79,7 @@ Vercel), so it stays off in local development unless you configure it.
 | `/review-web` | `<url>` | Capture 3 viewports and review with vision agent |
 | `/review-android` | — | Capture 3 device profiles and review with vision agent |
 | `/env-vars` | `<platform>` | Check env vars for web, admin, or android |
+| `/api-contract` | — | Verify API response shape matches across all clients |
 
 ### Example: review a website
 
