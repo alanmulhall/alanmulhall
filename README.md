@@ -51,3 +51,39 @@ Local values go in `admin/.env` (see `admin/.env.example`).
 LogRocket session recording is initialized client-side in `web/app/root.tsx`. It is
 enabled only when the `VITE_LOGROCKET_APP_ID` environment variable is set (e.g. in
 Vercel), so it stays off in local development unless you configure it.
+
+## Opencode
+
+### Subagents
+
+| Agent | Purpose | Model |
+|---|---|---|
+| `reviewer` | Reviews code for quality, correctness, and adherence to AGENTS.md conventions. Auto-detects platform (web/admin/android) and applies the right rules. Returns a grade (A–F). | claude-fable-5 |
+| `vision` | Analyses screenshots for visual quality. Detects platform (web/android) and reports layout, typography, contrast, and accessibility issues. Returns a grade (A–F). | claude-sonnet-4-6 |
+
+### Skills
+
+| Skill | Purpose | Example |
+|---|---|---|
+| `review-web` | Captures 3 viewport screenshots (desktop, tablet, mobile) and batch-reviews them with the vision agent. | `review-web https://www.alanmulhall.com/` |
+
+### Example: review a website
+
+```
+review-web https://www.alanmulhall.com/
+```
+
+Returns a per-viewport grade and an overall cross-viewport grade.
+
+### Example: review Android app screenshots
+
+1. Run `android/scripts/capture-screenshots.sh` (M5 in PLAN.md)
+2. Ask me to review the screenshots — I'll pass them to the vision agent.
+
+### Example: code review
+
+```
+task reviewer — review the android codebase
+```
+
+The reviewer agent reads all production files and returns issues with file:line references and a grade.
