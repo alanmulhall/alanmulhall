@@ -63,19 +63,27 @@ Vercel), so it stays off in local development unless you configure it.
 
 ### Skills
 
-| Skill | Purpose | Example |
+| Skill | Purpose | Agent-run |
 |---|---|---|
-| `review-web` | Captures 3 viewport screenshots (desktop, tablet, mobile) and batch-reviews them with the vision agent. | `review-web https://www.alanmulhall.com/` |
-| `review-android` | Captures screenshots on 3 device profiles (small_phone, medium_phone, medium_tablet) and batch-reviews them with the vision agent. | `review-android` |
-| `api-contract` | Checks that the API response shape in admin/ matches what web/ and android/ expect. | `api-contract` |
-| `add-changelog` | Adds a changelog entry following Keep a Changelog format with a "Why" line. | `add-changelog android Added "Added dark mode toggle"` |
-| `env-vars` | Lists required env vars for a platform and checks which ones are set. | `env-vars web` |
-| `decision` | Creates or updates DECISIONS.md with a structured decision record. | `decision android "Use Coil for image loading"` |
+| `review-web` | Captures 3 viewport screenshots and batch-reviews with vision agent. | Yes — also available as `/review-web` |
+| `review-android` | Captures 3 device profile screenshots and batch-reviews with vision agent. | Yes — also available as `/review-android` |
+| `api-contract` | Checks API response shape matches across admin/web/android. | Yes |
+| `add-changelog` | Adds Keep a Changelog entry with a "Why" line. | Yes |
+| `env-vars` | Lists required env vars and checks which are set. | Yes — also available as `/env-vars` |
+| `decision` | Records architectural decisions with rationale. | Yes |
+
+### Commands
+
+| Command | Args | Description |
+|---|---|---|
+| `/review-web` | `<url>` | Capture 3 viewports and review with vision agent |
+| `/review-android` | — | Capture 3 device profiles and review with vision agent |
+| `/env-vars` | `<platform>` | Check env vars for web, admin, or android |
 
 ### Example: review a website
 
 ```
-review-web https://www.alanmulhall.com/
+/review-web https://www.alanmulhall.com/
 ```
 
 Returns a per-viewport grade and an overall cross-viewport grade.
@@ -83,42 +91,18 @@ Returns a per-viewport grade and an overall cross-viewport grade.
 ### Example: review Android app screenshots
 
 ```
-review-android
+/review-android
 ```
 
 Captures 3 device profiles and returns per-profile grades plus an overall cross-profile grade.
 
-### Example: check API contract
-
-```
-api-contract
-```
-
-Reads the admin controller, web loader, and Android DTO to verify they agree on the response shape.
-
-### Example: add a changelog entry
-
-```
-add-changelog android Added "Added dark mode toggle to viewer screen"
-```
-
-Adds the entry under `## [Unreleased] / ### Added` in `android/CHANGELOG.md`.
-
 ### Example: check env vars
 
 ```
-env-vars admin
+/env-vars admin
 ```
 
 Lists required vars and reports which are set, missing, or empty.
-
-### Example: record a decision
-
-```
-decision android "Use Coil for image loading instead of Glide"
-```
-
-Creates the next numbered entry in `android/DECISIONS.md` with context, alternatives, and consequences.
 
 ### Example: code review
 
