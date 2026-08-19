@@ -92,3 +92,18 @@ file if the canonical domain ever changes.
 `newsletter-signup` is a long-running feature branch (Resend Audiences signup form). It needs a
 rebase onto main before merging — `home.tsx` and `home.test.tsx` have significant divergence.
 See `BACKLOG.md` for what's needed before it ships.
+
+## Commit attribution
+
+- **When committing via opencode**, append the footer:
+  ```
+  🤖 Generated with [opencode](https://opencode.ai)
+
+  Co-Authored-By: opencode <noreply@opencode.ai>
+  ```
+- **When committing via Claude Code**, append Claude's default footer:
+  ```
+  Co-Authored-By: Claude <noreply@anthropic.com>
+  ```
+
+  Both agents read this file; each follows the line that applies to it.
