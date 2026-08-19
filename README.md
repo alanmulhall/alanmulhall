@@ -2,13 +2,11 @@
 
 [![Maintainability](https://qlty.sh/gh/alanmulhall/projects/alanmulhall/maintainability.svg)](https://qlty.sh/gh/alanmulhall/projects/alanmulhall)
 
-Portfolio site for Alan Mulhall, an artist based in Los Angeles. Monorepo with three apps: a React Router frontend, a Rails admin panel, and a Jetpack Compose Android app — all consuming the same JSON API.
+Full-stack monorepo powering my artist portfolio — web, admin, and Android apps sharing a single API. Built entirely with AI coding agents: Claude Code for the web and Rails backend, opencode with a custom multi-agent setup for Android (Jetpack Compose). Three platforms, one API, production-deployed.
 
 - **Web** (`web/`) — React Router v7 SSR frontend, deployed to Vercel
 - **Admin** (`admin/`) — Rails 8 admin panel + JSON API, deployed to Railway
 - **Android** (`android/`) — Jetpack Compose portfolio app, consumes the Rails API
-
-Built with Claude Code (web + admin) and opencode with big-pickle (android), supported by 2 sub agents: vision (claude-sonnet-4-6) and reviewer (claude-fable-5).
 
 ## Environment Variables
 
