@@ -99,7 +99,7 @@ See `BACKLOG.md` for what's needed before it ships.
   ```
   🤖 Generated with [opencode](https://opencode.ai)
 
-  Co-Authored-By: opencode <noreply@opencode.ai>
+  Co-Authored-By: opencode-agent[bot] <opencode-agent[bot]@users.noreply.github.com>
   ```
 - **When committing via Claude Code**, append Claude's default footer:
   ```
